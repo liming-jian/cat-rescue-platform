@@ -1,0 +1,16 @@
+# IDE
+.idea/
+*.iml
+
+# Build
+**/target/
+
+# Dependencies
+**/node_modules/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log

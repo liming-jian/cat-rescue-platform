@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>喵星守护站 - 注册</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Noto+Serif+SC:wght@500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f7f0e6;
+            --panel-strong: rgba(255, 248, 239, 0.92);
+            --text: #4f3528;
+            --text-soft: #80675a;
+            --primary: #8a5d3d;
+            --primary-deep: #6f462c;
+            --accent: #dca983;
+            --shadow-xl: 0 32px 70px rgba(84, 53, 31, 0.15);
+            --shadow-md: 0 18px 36px rgba(96, 61, 35, 0.10);
+            --transition: 220ms ease;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; min-height: 100vh;
+            font-family: 'Quicksand', 'Microsoft YaHei', sans-serif;
+            color: var(--text);
+            background: radial-gradient(circle at 10% 8%, rgba(220,169,131,0.22), transparent 24%),
+                radial-gradient(circle at 88% 20%, rgba(138,93,61,0.13), transparent 20%),
+                linear-gradient(180deg, #fffaf4 0%, #f7f0e6 46%, #f3eadf 100%);
+            display: grid; place-items: center; padding: 24px;
+            position: relative; overflow: hidden;
+        }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);} }
+        @keyframes glowPulse {
+            0%,100%{box-shadow:0 0 0 4px rgba(220,169,131,0.18);}
+            50%{box-shadow:0 0 0 6px rgba(220,169,131,0.32),0 0 20px rgba(220,169,131,0.12);}
+        }
+        @keyframes gradientFlow {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+        @keyframes floatPaw {
+            0%{transform:translateY(0) rotate(0deg);opacity:0.10;}
+            50%{opacity:0.18;}
+            100%{transform:translateY(-110vh) rotate(360deg);opacity:0;}
+        }
+        @keyframes orbitGlow {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+        @keyframes floatMedal {0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-12px) rotate(2deg);}}
+        @keyframes shimmerLine {0%{transform:translateX(-120%);}100%{transform:translateX(120%);}}
+        .bg-paw {
+            position:absolute; pointer-events:none; z-index:0;
+            animation: floatPaw linear infinite;
+        }
+        .bg-paw:nth-child(1){left:5%;bottom:-60px;animation-duration:12s;}
+        .bg-paw:nth-child(2){left:20%;bottom:-80px;animation-duration:16s;animation-delay:-4s;}
+        .bg-paw:nth-child(3){left:40%;bottom:-40px;animation-duration:11s;animation-delay:-7s;}
+        .bg-paw:nth-child(4){left:65%;bottom:-70px;animation-duration:14s;animation-delay:-2s;}
+        .bg-paw:nth-child(5){left:85%;bottom:-50px;animation-duration:13s;animation-delay:-9s;}
+        .bg-paw:nth-child(6){left:50%;bottom:-90px;animation-duration:17s;animation-delay:-5s;}
+
+        .auth-shell {
+            position:relative;z-index:1;width:min(1180px,100%);min-height:760px;
+            display:grid;grid-template-columns:minmax(0,1.08fr) minmax(360px,440px);
+            border-radius:40px;overflow:hidden;background:rgba(255,255,255,0.48);
+            border:1px solid rgba(255,255,255,0.6);box-shadow:var(--shadow-xl);
+            backdrop-filter:blur(18px);animation:fadeInUp 0.8s ease-out;
+        }
+        .visual-panel {
+            position:relative;padding:58px 56px 54px;color:#fffaf4;
+            background:radial-gradient(circle at 22% 18%,rgba(255,244,232,0.24),transparent 24%),
+                radial-gradient(circle at 78% 76%,rgba(220,169,131,0.28),transparent 28%),
+                linear-gradient(140deg,rgba(45,26,16,0.90) 0%,rgba(112,70,43,0.72) 48%,rgba(165,112,78,0.62) 100%),
+                url('https://images.unsplash.com/photo-1574158622682-e40e69881006?w=1600') center/cover;
+            display:flex;flex-direction:column;justify-content:space-between;align-items:stretch;
+            text-align:left;overflow:hidden;
+        }
+        .visual-panel::before {
+            content:'';position:absolute;inset:42px;border:1px solid rgba(255,255,255,0.14);border-radius:34px;
+            background:linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02));backdrop-filter:blur(2px);
+        }
+        .visual-panel::after {
+            content:'';position:absolute;right:-110px;bottom:-110px;width:380px;height:380px;
+            border-radius:50%;background:conic-gradient(from 120deg,rgba(255,255,255,0.26),rgba(220,169,131,0.08),rgba(255,255,255,0.18));
+            filter:blur(1px);animation:orbitGlow 18s linear infinite;
+        }
+        .visual-inner {position:relative;z-index:2;display:grid;gap:24px;height:100%;align-content:space-between;}
+        .visual-kicker {display:inline-flex;align-items:center;gap:10px;width:max-content;min-height:40px;padding:0 14px;border-radius:999px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);backdrop-filter:blur(10px);font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;}
+        .visual-panel h1 {font-family:'Noto Serif SC',serif;font-size:clamp(2.35rem,3.5vw,3.8rem);line-height:1.14;margin:0;letter-spacing:0.03em;text-shadow:0 14px 34px rgba(28,17,10,0.34);position:relative;z-index:1;}
+        .visual-panel p {max-width:520px;color:rgba(255,244,232,0.88);font-size:1.05rem;line-height:1.9;margin:0;position:relative;z-index:1;}
+        .guardian-card {position:relative;z-index:2;width:min(380px,100%);padding:20px;border-radius:28px;background:linear-gradient(145deg,rgba(255,255,255,0.18),rgba(255,255,255,0.07));border:1px solid rgba(255,255,255,0.22);box-shadow:0 24px 50px rgba(24,15,10,0.24);backdrop-filter:blur(14px);animation:floatMedal 5.6s ease-in-out infinite;overflow:hidden;}
+        .guardian-card::before {content:'';position:absolute;inset:0;background:linear-gradient(100deg,transparent 0%,rgba(255,255,255,0.18) 45%,transparent 70%);animation:shimmerLine 4.8s ease-in-out infinite;}
+        .guardian-row {position:relative;display:grid;grid-template-columns:64px minmax(0,1fr);align-items:center;gap:14px;}
+        .guardian-icon {width:50px !important;height:50px !important;border-radius:16px;display:inline-flex !important;align-items:center !important;justify-content:center !important;margin:0;align-self:center;justify-self:center;background:linear-gradient(145deg,#b67e56,#8a5e40);box-shadow:0 8px 18px rgba(35,22,14,0.22);flex-shrink:0;color:#fff;padding:0;line-height:1;vertical-align:middle;}
+        .guardian-card strong {display:block;font-family:'Noto Serif SC',serif;font-size:1.1rem;margin-bottom:4px;}
+        .guardian-card span {display:block;color:rgba(255,244,232,0.78);font-size:0.88rem;line-height:1.55;}
+        .guardian-icon svg {display:block !important;width:24px;height:24px;overflow:visible;transform:none;margin:0;}
+        .visual-metrics {position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:4px;width:min(430px,100%);}
+        .metric-pill {min-width:0;padding:16px 12px;border-radius:20px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.16);backdrop-filter:blur(10px);}
+        .metric-pill strong {display:block;font-family:'Quicksand','Microsoft YaHei',sans-serif;font-size:1.5rem;line-height:1;color:#fff;font-variant-numeric:normal;letter-spacing:0;}
+        .metric-pill span {display:block;margin-top:6px;font-size:0.72rem;color:rgba(255,244,232,0.76);white-space:nowrap;}
+        .paw-icon {display:block;}
+        .form-panel {
+            background:linear-gradient(180deg,rgba(255,251,247,0.96),rgba(255,247,239,0.88));
+            backdrop-filter:blur(18px);padding:42px 34px;display:flex;align-items:center;
+            animation:fadeInUp 0.8s ease-out 0.2s both;
+        }
+        .form-card {width:100%;padding:30px;border-radius:30px;background:var(--panel-strong);border:1px solid rgba(255,255,255,0.72);box-shadow:var(--shadow-md);}
+        .form-card h2 {margin:0 0 8px;font-family:'Noto Serif SC',serif;font-size:1.8rem;letter-spacing:0.03em;color:var(--primary);}
+        .form-card .subtitle {margin:0 0 24px;color:var(--text-soft);font-size:0.92rem;}
+        .field {margin-bottom:16px;}
+        .field label {display:block;margin-bottom:8px;font-weight:700;color:var(--text);font-size:0.94rem;}
+        .input-shell {position:relative;}
+        .input-shell input {
+            width:100%;min-height:52px;padding:0 16px 0 48px;
+            border:1px solid rgba(138,93,61,0.14);border-radius:16px;outline:none;
+            background:rgba(255,255,255,0.90);color:var(--text);font-size:1rem;transition:var(--transition);
+        }
+        .input-shell input:focus {border-color:rgba(138,93,61,0.42);background:#fff;animation:glowPulse 2s ease-in-out infinite;}
+        .field-icon {position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--text-soft);pointer-events:none;display:grid;place-items:center;}
+        .eye-icon {
+            position:absolute;right:14px;top:50%;transform:translateY(-50%);width:36px;height:36px;
+            border-radius:12px;display:grid;place-items:center;cursor:pointer;border:none;
+            background:transparent;color:var(--text-soft);transition:var(--transition);
+        }
+        .eye-icon:hover {background:rgba(220,169,131,0.14);}
+        .strength-bar {display:flex;gap:6px;height:6px;margin:12px 0 4px;}
+        .bar-segment {flex:1;background:rgba(138,93,61,0.10);border-radius:3px;transition:0.3s;}
+        .weak{background:#ff8a80!important;}.medium{background:#ffd54f!important;}.strong{background:#81c784!important;}
+        .strength-text {font-size:0.84rem;color:var(--text-soft);margin-bottom:20px;display:block;min-height:1.2em;}
+        .submit-btn {
+            width:100%;min-height:52px;margin-top:4px;border:none;border-radius:18px;color:#fff;
+            font-size:1.02rem;font-weight:700;cursor:not-allowed;
+            background:#ccc;box-shadow:none;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.3s ease,background 0.3s;
+        }
+        .submit-btn.active {
+            cursor:pointer;
+            background:linear-gradient(135deg,var(--primary),var(--primary-deep),var(--accent),var(--primary));
+            background-size:300% 300%;box-shadow:0 18px 30px rgba(121,76,44,0.20);
+        }
+        .submit-btn.active:hover {transform:scale(1.03) translateY(-2px);box-shadow:0 22px 40px rgba(121,76,44,0.28);animation:gradientFlow 3s ease infinite;}
+        .link {display:block;text-align:center;margin-top:20px;color:var(--text-soft);text-decoration:none;font-size:0.92rem;font-weight:600;transition:var(--transition);}
+        .link:hover {color:var(--primary);}
+        @media(max-width:980px){.auth-shell{grid-template-columns:1fr;min-height:auto;}.visual-panel{padding:30px 22px;min-height:360px;}.form-panel{padding:26px 22px;}.visual-metrics{grid-template-columns:1fr;}.visual-panel::before{inset:18px;}}
+        @media(max-width:640px){body{padding:12px;}.form-card{padding:22px 18px;border-radius:24px;}}
+        @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;}}
+    </style>
+</head>
+<body>
+    <!-- Floating SVG paw particles -->
+    <svg class="bg-paw" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" width="36" height="36" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="18" fill="currentColor"/><ellipse cx="14.5" cy="18" rx="4.6" ry="6" fill="rgba(255,255,255,0.97)"/><ellipse cx="25.5" cy="13" rx="5.6" ry="7.6" fill="rgba(255,255,255,0.97)"/><ellipse cx="38.5" cy="13" rx="5.6" ry="7.6" fill="rgba(255,255,255,0.97)"/><ellipse cx="49.5" cy="18" rx="4.6" ry="6" fill="rgba(255,255,255,0.97)"/><path d="M32 28c-3.4 0-5.8 0.6-8.2 2-2.6 1.5-4.6 3.8-6.4 6.6-1.4 2.2-3 4.8-3 7.6 0 4 3 6.4 6.4 6.4 2.6 0 4.6-1.2 6.4-2.4 1.6-1.06 3-2.2 4.8-2.2s3.2 1.14 4.8 2.2c1.8 1.2 3.8 2.4 6.4 2.4 3.4 0 6.4-2.4 6.4-6.4 0-2.8-1.6-5.4-3-7.6-1.8-2.8-3.8-5.1-6.4-6.6C37.8 28.6 35.4 28 32 28Z" fill="rgba(255,255,255,0.97)"/></svg>
+    <svg class="bg-paw" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" width="28" height="28" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="18" fill="currentColor"/><ellipse cx="14.5" cy="18" rx="4.6" ry="6" fill="rgba(255,255,255,0.97)"/><ellipse cx="25.5" cy="13" rx="5.6" ry="7.6" fill="rgba(255,255,255,0.97)"/><ellipse cx="38.5" cy="13" rx="5.6" ry="7.6" fill="rgba(255,255,255,0.97)"/><ellipse cx="49.5" cy="18" rx="4.6" ry="6" fill="rgba(255,255,255,0.97)"/><path d="M32 28c-3.4 0-5.8 0.6-8.2 2-2.6 1.5-4.6 3.8-6.4 6.6-1.4 2.2-3 4.8-3 7.6 0 4 3 6.4 6.4 6.4 2.6 0 4.6-1.2 6.4-2.4 1.6-1.06 3-2.2 4.8-2.2s3.2 1.14 4.8 2.2c1.8 1.2 3.8 2.4 6.4 2.4 3.4 0 6.4-2.4 6.4-6.4 0-2.8-1.6-5.4-3-7.6-1.8-2.8-3.8-5.1-6.4-6.6C37.8 28.6 35.4 28 32 28Z" fill="rgba(255,255,255,0.97)"/></svg>
+    <svg class="bg-paw" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" width="32" height="32" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="18" fill="currentColor"/><ellipse cx="14.5" cy="18" rx="4.6" ry="6" fill="rgba(255,255,255,0.97)"/><ellipse cx="25.5" cy="13" rx="5.6" ry="7.6" fill="rgba(255,255,255,0.97)"/><ellipse cx="38.5" cy="13" rx="5.6" ry="7.6" fill="rgba(255,255,255,0.97)"/><ellipse cx="49.5" cy="18" rx="4.6" ry="6" fill="rgba(255,255,255,0.97)"/><path d="M32 28c-3.4 0-5.8 0.6-8.2 2-2.6 1.5-4.6 3.8-6.4 6.6-1.4 2.2-3 4.8-3 7.6 0 4 3 6.4 6.4 6.4 2.6 0 4.6-1.2 6.4-2.4 1.6-1.06 3-2.2 4.8-2.2s3.2 1.14 4.8 2.2c1.8 1.2 3.8 2.4 6.4 2.4 3.4 0 6.4-2.4 6.4-6.4 0-2.8-1.6-5.4-3-7.6-1.8-2.8-3.8-5.1-6.4-6.6C37.8 28.6 35.4 28 32 28Z" fill="rgba(255,255,255,0.97)"/></svg>
+    <svg class="bg-paw" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" width="24" height="24" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="18" fill="currentColor"/><ellipse cx="14.5" cy="18" rx="4.6" ry="6" fill="rgba(255,255,255,0.97)"/><ellipse cx="25.5" cy="13" rx="5.6" ry="7.6" fill="rgba(255,255,255,0.97)"/><ellipse cx="38.5" cy="13" rx="5.6" ry="7.6" fill="rgba(255,255,255,0.97)"/><ellipse cx="49.5" cy="18" rx="4.6" ry="6" fill="rgba(255,255,255,0.97)"/><path d="M32 28c-3.4 0-5.8 0.6-8.2 2-2.6 1.5-4.6 3.8-6.4 6.6-1.4 2.2-3 4.8-3 7.6 0 4 3 6.4 6.4 6.4 2.6 0 4.6-1.2 6.4-2.4 1.6-1.06 3-2.2 4.8-2.2s3.2 1.14 4.8 2.2c1.8 1.2 3.8 2.4 6.4 2.4 3.4 0 6.4-2.4 6.4-6.4 0-2.8-1.6-5.4-3-7.6-1.8-2.8-3.8-5.1-6.4-6.6C37.8 28.6 35.4 28 32 28Z" fill="rgba(255,255,255,0.97)"/></svg>
+    <svg class="bg-paw" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" width="30" height="30" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="18" fill="currentColor"/><ellipse cx="14.5" cy="18" rx="4.6" ry="6" fill="rgba(255,255,255,0.97)"/><ellipse cx="25.5" cy="13" rx="5.6" ry="7.6" fill="rgba(255,255,255,0.97)"/><ellipse cx="38.5" cy="13" rx="5.6" ry="7.6" fill="rgba(255,255,255,0.97)"/><ellipse cx="49.5" cy="18" rx="4.6" ry="6" fill="rgba(255,255,255,0.97)"/><path d="M32 28c-3.4 0-5.8 0.6-8.2 2-2.6 1.5-4.6 3.8-6.4 6.6-1.4 2.2-3 4.8-3 7.6 0 4 3 6.4 6.4 6.4 2.6 0 4.6-1.2 6.4-2.4 1.6-1.06 3-2.2 4.8-2.2s3.2 1.14 4.8 2.2c1.8 1.2 3.8 2.4 6.4 2.4 3.4 0 6.4-2.4 6.4-6.4 0-2.8-1.6-5.4-3-7.6-1.8-2.8-3.8-5.1-6.4-6.6C37.8 28.6 35.4 28 32 28Z" fill="rgba(255,255,255,0.97)"/></svg>
+    <svg class="bg-paw" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" width="26" height="26" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="18" fill="currentColor"/><ellipse cx="14.5" cy="18" rx="4.6" ry="6" fill="rgba(255,255,255,0.97)"/><ellipse cx="25.5" cy="13" rx="5.6" ry="7.6" fill="rgba(255,255,255,0.97)"/><ellipse cx="38.5" cy="13" rx="5.6" ry="7.6" fill="rgba(255,255,255,0.97)"/><ellipse cx="49.5" cy="18" rx="4.6" ry="6" fill="rgba(255,255,255,0.97)"/><path d="M32 28c-3.4 0-5.8 0.6-8.2 2-2.6 1.5-4.6 3.8-6.4 6.6-1.4 2.2-3 4.8-3 7.6 0 4 3 6.4 6.4 6.4 2.6 0 4.6-1.2 6.4-2.4 1.6-1.06 3-2.2 4.8-2.2s3.2 1.14 4.8 2.2c1.8 1.2 3.8 2.4 6.4 2.4 3.4 0 6.4-2.4 6.4-6.4 0-2.8-1.6-5.4-3-7.6-1.8-2.8-3.8-5.1-6.4-6.6C37.8 28.6 35.4 28 32 28Z" fill="rgba(255,255,255,0.97)"/></svg>
+
+    <main class="auth-shell">
+        <section class="visual-panel">
+            <div class="visual-inner">
+                <span class="visual-kicker">Guardian Account</span>
+                <div>
+                    <h1>把一次注册，变成长期守护的开始</h1>
+                    <p>创建账号后，你可以持续跟进领养申请、志愿报名和系统通知，让每一次救助都有记录、有反馈、有下一步。</p>
+                </div>
+                <div class="guardian-card">
+                    <div class="guardian-row">
+                        <span class="guardian-icon"><svg viewBox="0 0 24 24" fill="none" width="24" height="24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5.4" width="18" height="13.4" rx="3"/><circle cx="8.6" cy="11.2" r="2"/><path d="M6.7 15c.8-.86 1.77-1.3 2.9-1.3 1.03 0 2 .44 2.82 1.3"/><path d="M14 10.2h4"/><path d="M14 13.4h3.1"/><path d="M18.15 17.05a2.45 2.45 0 0 0 2.15-2.45 2.45 2.45 0 0 0-2.15-2.45A2.45 2.45 0 0 0 16 14.6a2.45 2.45 0 0 0 2.15 2.45Z"/><path d="M18.15 13.25v2.75"/><path d="M16.95 14.75l1.2 1.2 1.95-2.05"/></svg></span>
+                        <div><strong>守护者身份卡</strong><span>注册后自动生成平台身份，用于领养、志愿与通知流程。</span></div>
+                    </div>
+                </div>
+                <div class="visual-metrics">
+                    <div class="metric-pill"><strong>3步</strong><span>完成注册</span></div>
+                    <div class="metric-pill"><strong>1站</strong><span>统一管理</span></div>
+                    <div class="metric-pill"><strong>24h</strong><span>通知可达</span></div>
+                </div>
+            </div>
+        </section>
+        <section class="form-panel">
+            <div class="form-card">
+                <h2>注册账号</h2>
+                <p class="subtitle">创建你的守护者身份，开始救助之旅</p>
+
+                <div class="field">
+                    <label for="regUser">用户名</label>
+                    <div class="input-shell">
+                        <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" width="18" height="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                        <input type="text" id="regUser" placeholder="设置用户名">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="regPass">密码</label>
+                    <div class="input-shell">
+                        <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" width="18" height="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+                        <input type="password" id="regPass" placeholder="设置密码 (含大小写字母+数字)" oninput="checkStrength()">
+                        <button type="button" class="eye-icon" id="eyeReg" onclick="togglePass('regPass','eyeReg')">
+                            <svg viewBox="0 0 24 24" fill="none" width="18" height="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="strength-bar">
+                    <div id="bar1" class="bar-segment"></div>
+                    <div id="bar2" class="bar-segment"></div>
+                    <div id="bar3" class="bar-segment"></div>
+                </div>
+                <span id="strengthText" class="strength-text">密码需包含大小写字母和数字</span>
+
+                <button class="submit-btn" id="btnReg" onclick="doRegister()" disabled>立即注册</button>
+                <a href="login.html" class="link">已有账号？去登录 &rarr;</a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function togglePass(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="18" height="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+            } else {
+                input.type = 'password';
+                icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="18" height="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+            }
+        }
+
+        function checkStrength() {
+            const pass = document.getElementById('regPass').value;
+            const text = document.getElementById('strengthText');
+            const btn = document.getElementById('btnReg');
+            const bars = [document.getElementById('bar1'), document.getElementById('bar2'), document.getElementById('bar3')];
+            bars.forEach(b => b.className = 'bar-segment'); btn.className = 'submit-btn'; btn.disabled = true;
+            if(!pass) { text.innerText="密码需包含大小写字母和数字"; text.style.color="var(--text-soft)"; return; }
+            let score = 0; if(pass.length >= 6) score++; if(/[a-z]/.test(pass) && /[A-Z]/.test(pass)) score++; if(/[0-9]/.test(pass)) score++;
+            if(score === 1) { bars[0].classList.add('weak'); text.innerText = "强度：弱 (太简单了)"; text.style.color = "#ff8a80"; }
+            else if(score === 2) { bars[0].classList.add('medium'); bars[1].classList.add('medium'); text.innerText = "强度：中 (再加点数字或大写)"; text.style.color = "#ffd54f"; }
+            else if(score === 3) { bars.forEach(b => b.classList.add('strong')); text.innerText = "强度：强 (完美!)"; text.style.color = "#81c784"; btn.disabled = false; btn.className = 'submit-btn active'; }
+        }
+        function doRegister() {
+            const user = document.getElementById('regUser').value; const pass = document.getElementById('regPass').value;
+            if(!user) return alert("请输入用户名");
+            fetch('http://localhost:8081/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: user, password: pass }) })
+            .then(res=>res.json()).then(data => { if(data.success) { alert('注册成功！'); window.location.href='login.html'; } else alert('注册失败: ' + data.message); });
+        }
+    </script>
+</body>
+</html>

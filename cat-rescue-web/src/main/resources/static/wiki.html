@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>喵星守护站 - 科普百科</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f6efe6;
+            --bg-soft: #fbf7f2;
+            --panel: rgba(255, 252, 247, 0.78);
+            --panel-solid: #fffaf4;
+            --line: rgba(126, 91, 63, 0.16);
+            --text: #4f3528;
+            --text-soft: #7d6355;
+            --primary: #8b5e3c;
+            --primary-deep: #6d4529;
+            --accent: #dca87f;
+            --accent-soft: #f2d8c1;
+            --success: #6f8f66;
+            --shadow-lg: 0 28px 60px rgba(87, 55, 31, 0.13);
+            --shadow-md: 0 16px 32px rgba(96, 61, 35, 0.10);
+            --radius-xl: 32px;
+            --radius-lg: 24px;
+            --radius-md: 18px;
+            --transition: 220ms ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Quicksand', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* --- Topbar Navigation --- */
+        .topbar {
+            position: sticky;
+            top: 14px;
+            z-index: 1000;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            background: rgba(255, 250, 244, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            box-shadow: 0 14px 38px rgba(94, 62, 39, 0.10);
+            border-radius: 999px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            margin: 18px auto 0;
+            width: min(1240px, calc(100% - 32px));
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(145deg, #a2704e, #7b4f31);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.26), 0 8px 20px rgba(122, 79, 49, 0.3);
+            flex-shrink: 0;
+        }
+
+        .brand-copy strong {
+            display: block;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.06rem;
+            letter-spacing: 0.06em;
+        }
+
+        .brand-copy span {
+            display: block;
+            font-size: 0.78rem;
+            color: var(--text-soft);
+            margin-top: 2px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-soft);
+            font-weight: 600;
+            font-size: 0.92rem;
+            padding: 8px 16px;
+            border-radius: 999px;
+            transition: all var(--transition);
+        }
+
+        .nav-links a:hover {
+            background: var(--accent-soft);
+            color: var(--primary);
+        }
+
+        .nav-links a.active {
+            background: linear-gradient(145deg, var(--primary), var(--primary-deep));
+            color: white;
+            box-shadow: 0 4px 14px rgba(139, 94, 60, 0.3);
+        }
+
+        /* --- Main Layout --- */
+        .main-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 32px;
+            min-height: 80vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- Sidebar with glassmorphism --- */
+        .sidebar {
+            flex: 0 0 260px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: rgba(255, 252, 247, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            padding: 28px 20px;
+            border-radius: var(--radius-lg);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+            box-shadow: var(--shadow-md);
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideInLeft 0.6s ease forwards 0.3s;
+            z-index: 10;
+            pointer-events: auto;
+        }
+
+        @keyframes slideInLeft {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .sidebar h3 {
+            color: var(--primary);
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.1rem;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--accent-soft);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-list { list-style: none; }
+        .category-list li { margin-bottom: 6px; }
+
+        .category-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 16px;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: var(--text-soft);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
+            pointer-events: auto;
+        }
+
+        .category-btn:hover {
+            background: var(--accent-soft);
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .category-btn.active {
+            background: linear-gradient(145deg, var(--primary), var(--primary-deep));
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 6px 18px rgba(139, 94, 60, 0.25);
+        }
+
+        /* --- Content Area --- */
+        .content-area { flex: 1; min-width: 0; position: relative; z-index: 2; }
+
+        .page-header {
+            margin-bottom: 32px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.7s ease forwards 0.2s;
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header h1 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 2.2rem;
+            color: var(--primary);
+        }
+
+        .page-header p {
+            color: var(--text-soft);
+            margin-top: 8px;
+            font-size: 1rem;
+        }
+
+        /* --- Wiki Cards with hover float --- */
+        .wiki-card {
+            background: var(--panel-solid);
+            border-radius: var(--radius-lg);
+            padding: 0;
+            margin-bottom: 28px;
+            box-shadow: 0 8px 24px rgba(96, 61, 35, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: cardFadeIn 0.6s ease forwards;
+        }
+
+        .wiki-card:nth-child(1) { animation-delay: 0.3s; }
+        .wiki-card:nth-child(2) { animation-delay: 0.45s; }
+        .wiki-card:nth-child(3) { animation-delay: 0.6s; }
+        .wiki-card:nth-child(4) { animation-delay: 0.75s; }
+
+        @keyframes cardFadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .wiki-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .wiki-card img {
+            width: 220px;
+            min-height: 220px;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            align-self: stretch;
+            flex-shrink: 0;
+            transition: transform 0.5s ease;
+        }
+
+        .wiki-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .card-text {
+            flex: 1;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 220px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--accent-soft);
+            color: var(--primary);
+            padding: 5px 14px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            width: fit-content;
+        }
+
+        .card-text h2 {
+            margin: 4px 0 10px;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+        .card-text p {
+            line-height: 1.7;
+            color: var(--text-soft);
+            font-size: 0.94rem;
+        }
+
+        .read-more {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-size: 0.92rem;
+            border: none;
+            background: transparent;
+            padding: 0;
+            font-family: inherit;
+            position: relative;
+            z-index: 3;
+            pointer-events: auto;
+        }
+
+        .read-more:hover {
+            color: var(--primary);
+            gap: 10px;
+        }
+
+        /* --- Modal --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(79, 53, 40, 0.5);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--panel-solid);
+            width: 90%;
+            max-width: 620px;
+            padding: 44px;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            transform: translateY(40px) scale(0.96);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 18px; right: 22px;
+            font-size: 1.8rem;
+            color: var(--text-soft);
+            cursor: pointer;
+            transition: all var(--transition);
+            line-height: 1;
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg);
+            background: var(--accent-soft);
+            color: var(--primary);
+        }
+
+        .modal-title {
+            font-family: 'Noto Serif SC', serif;
+            color: var(--primary);
+            margin-top: 0;
+            padding-bottom: 14px;
+            border-bottom: 2px solid var(--accent-soft);
+            font-size: 1.4rem;
+        }
+
+        .modal-body {
+            line-height: 1.9;
+            color: var(--text-soft);
+            white-space: pre-line;
+            margin-top: 18px;
+            font-size: 0.96rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .topbar {
+                border-radius: var(--radius-lg);
+                flex-direction: column;
+                gap: 12px;
+                padding: 14px;
+            }
+            .nav-links { gap: 4px; justify-content: center; }
+            .main-container { flex-direction: column; }
+            .sidebar { position: static; flex: none; transform: none; opacity: 1; animation: none; }
+            .wiki-card { flex-direction: column; }
+            .wiki-card img { width: 100%; height: 200px; min-height: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="topbar">
+        <a href="index.html" class="brand">
+            <span class="brand-mark"><img src="图片/猫爪logo.png" alt="猫爪" style="width:100%;height:100%;object-fit:cover;border-radius:14px;"></span>
+            </span>
+            <span class="brand-copy">
+                <strong>喵星守护站</strong>
+                <span>城市流浪猫救助与领养平台</span>
+            </span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="wiki.html" class="active">流浪猫百科</a></li>
+            <li><a href="adoption.html">领养中心</a></li>
+            <li><a href="stories.html">救助故事</a></li>
+            <li><a href="volunteer.html">志愿者</a></li>
+            <li><a href="donate.html">义卖</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <h3>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                知识分类
+            </h3>
+            <ul class="category-list">
+                <li><button type="button" class="category-btn active" data-category="all" onclick="filterWiki('all', this)">全部文章</button></li>
+                <li><button type="button" class="category-btn" data-category="tnr" onclick="filterWiki('tnr', this)">TNR 绝育计划</button></li>
+                <li><button type="button" class="category-btn" data-category="feeding" onclick="filterWiki('feeding', this)">科学喂养</button></li>
+                <li><button type="button" class="category-btn" data-category="medical" onclick="filterWiki('medical', this)">医疗急救</button></li>
+                <li><button type="button" class="category-btn" data-category="adoption" onclick="filterWiki('adoption', this)">领养指南</button></li>
+            </ul>
+        </aside>
+
+        <section class="content-area">
+            <div class="page-header">
+                <h1>流浪猫知识库</h1>
+                <p>了解正确的救助知识，是对它们最大的保护。</p>
+            </div>
+
+            <div id="wiki-grid">
+                <article class="wiki-card" data-category="tnr">
+                    <img src="https://images.unsplash.com/photo-1573865526739-10659fec78a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="TNR绝育">
+                    <div class="card-text">
+                        <span class="tag">TNR 绝育</span>
+                        <h2>什么是 TNR 计划？</h2>
+                        <p>TNR 是 Trap（诱捕）、Neuter（绝育）、Return（放归）的缩写。这是目前国际公认的控制流浪猫数量最人道、最有效的方法。</p>
+                        <button type="button" data-modal="tnr" class="read-more" onclick="openModal('tnr')">阅读全文 &rarr;</button>
+                    </div>
+                </article>
+
+                <article class="wiki-card" data-category="feeding">
+                    <img src="http://localhost:8081/myImages/波斯猫.png" alt="科学喂养">
+                    <div class="card-text">
+                        <span class="tag">科学喂养</span>
+                        <h2>秋冬季节流浪猫投喂指南</h2>
+                        <p>冬天流浪猫急需高热量的食物。请避免喂食含盐量高的人类食物，尽量提供干粮和清洁的温水。注意为猫咪提供避风保暖的庇护所，防止冻伤耳尖和脚垫；增加室内互动游戏时间，帮助它们消耗精力、保持活力。</p>
+                        <button type="button" data-modal="feeding" class="read-more" onclick="openModal('feeding')">阅读全文 &rarr;</button>
+                    </div>
+                </article>
+
+                <article class="wiki-card" data-category="medical">
+                    <img src="http://localhost:8081/myImages/猫猫吃猫粮.png" alt="猫咪疾病">
+                    <div class="card-text">
+                        <span class="tag">医疗急救</span>
+                        <h2>遇到生病的流浪猫怎么办？</h2>
+                        <p>如果发现流浪猫眼部分泌物多、流鼻涕或行动不便，这可能是猫鼻支或受伤。请不要盲目用药，先尝试联系当地救助组织。</p>
+                        <button type="button" data-modal="medical" class="read-more" onclick="openModal('medical')">阅读全文 &rarr;</button>
+                    </div>
+                </article>
+
+                <article class="wiki-card" data-category="adoption">
+                    <img src="https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="领养准备">
+                    <div class="card-text">
+                        <span class="tag">领养指南</span>
+                        <h2>领养一只流浪猫，你需要准备什么？</h2>
+                        <p>除了猫砂盆、猫粮等物资，更重要的是做好"不离不弃"的心理准备，以及封窗（防止猫咪坠楼）的安全措施。</p>
+                        <button type="button" data-modal="adoption" class="read-more" onclick="openModal('adoption')">阅读全文 &rarr;</button>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="wikiModal">
+        <div class="modal-content">
+            <button type="button" class="close-btn" data-action="close-modal" aria-label="关闭">&times;</button>
+            <h2 class="modal-title" id="modalTitle">标题</h2>
+            <div class="modal-body" id="modalBody">内容加载中...</div>
+        </div>
+    </div>
+
+    <script>
+        const wikiDetails = {
+            'tnr': {
+                title: "TNR 绝育计划详解",
+                content: "TNR (Trap-Neuter-Return) 是目前国际上公认的最人道、有效的控制流浪猫数量的方法。\n\n1. Trap (诱捕)：使用专业的诱捕笼，在不伤害猫咪的前提下将其捕获。\n2. Neuter (绝育)：送往合作的宠物医院进行绝育手术，并剪去左耳耳尖一小块（耳标）作为已绝育的标记。\n3. Return (放归)：在猫咪麻醉苏醒、伤口恢复后，将其放归回原本的生活区域。\n\n为什么不做移除？因为\"真空效应\"。如果简单地移走一个区域的猫，周围的流浪猫会迅速填补这个真空，继续繁殖。只有TNR能从根本上控制数量。"
+            },
+            'feeding': {
+                title: "科学投喂指南",
+                content: "投喂流浪猫是一份爱心，但也需要讲究科学方法，避免好心办坏事。\n\n【食物选择】\n首选猫粮（干粮或罐头）。如果没有猫粮，可以用煮熟的鸡胸肉、鱼肉（去刺）。\n绝对禁止：含盐高的人类剩饭（会导致肾衰竭）、牛奶（大部分猫乳糖不耐受会拉稀）、巧克力、洋葱、葡萄等。\n\n【水源】\n冬天水容易结冰，如果条件允许，请尽量提供温水，或者在水中加一点点糖（不仅提供能量，还能稍微降低冰点）。\n\n【环境卫生】\n请遵循\"即喂即清\"原则。猫咪吃完后，请清理干净地面残留和餐具，不要给社区环境造成负担，这样才能让大家更包容流浪猫。"
+            },
+            'medical': {
+                title: "常见疾病与紧急处理",
+                content: "在救助过程中，我们经常会遇到生病的猫咪。以下是几种常见情况的判断：\n\n1. 猫鼻支 (FHV-1)：\n症状：打喷嚏、流浓鼻涕、眼睛睁不开、眼部分泌物多。\n处理：这在流浪小猫中致死率很高。需要保暖，并补充赖氨酸，严重时必须送医使用抗生素。\n\n2. 口炎：\n症状：流口水、进食困难、毛发脏乱（因为嘴疼没法舔毛）。\n处理：这是非常痛苦的疾病，通常需要拔牙治疗。如果发现这样的猫咪，请联系专业救助团队。\n\n3. 外伤：\n如果发现猫咪有开放性伤口或骨折，请勿随意挪动，用纸箱固定后立即送医。"
+            },
+            'adoption': {
+                title: "领养前的心理与物资准备",
+                content: "领养代替购买，是给流浪动物最好的礼物。但在带它回家前，请做好以下准备：\n\n【物资准备】\n1. 封窗：这是最重要的！一定要安装金刚网纱窗，防止猫咪因好奇或抓虫子而坠楼。\n2. 基础用品：猫砂盆、猫砂、猫粮、水碗。\n3. 过渡期用品：猫笼（刚到家可能需要隔离适应）。\n\n【心理准备】\n1. 3-3-3 原则：猫咪需要 3 天来放下戒备（可能会躲起来），3 周来适应当作息，3 个月来真正把你当家人。\n2. 能够接受它的不完美：流浪猫可能胆小、也可能生病，你需要有耐心去治愈它。\n\n承诺：一旦选择，终身负责，不离不弃。"
+            }
+        };
+
+        function openModal(category) {
+            const modal = document.getElementById('wikiModal');
+            const titleEl = document.getElementById('modalTitle');
+            const bodyEl = document.getElementById('modalBody');
+            const data = wikiDetails[category];
+            if (!modal || !titleEl || !bodyEl || !data) return;
+            titleEl.textContent = data.title;
+            bodyEl.textContent = data.content;
+            modal.style.display = 'flex';
+            requestAnimationFrame(() => modal.classList.add('active'));
+        }
+
+        function closeModalBtn() {
+            const modal = document.getElementById('wikiModal');
+            if (!modal) return;
+            modal.classList.remove('active');
+            window.setTimeout(() => {
+                if (!modal.classList.contains('active')) {
+                    modal.style.display = 'none';
+                }
+            }, 300);
+        }
+
+        function filterWiki(category, trigger) {
+            const cards = document.querySelectorAll('.wiki-card');
+            const buttons = document.querySelectorAll('.category-btn');
+            cards.forEach(card => {
+                const matched = category === 'all' || card.dataset.category === category;
+                card.style.display = matched ? 'flex' : 'none';
+                card.hidden = !matched;
+            });
+            buttons.forEach(btn => btn.classList.toggle('active', btn === trigger));
+        }
+
+        function bindWikiInteractions() {
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', event => {
+                    event.preventDefault();
+                    filterWiki(btn.dataset.category, btn);
+                });
+            });
+
+            document.querySelectorAll('.read-more').forEach(btn => {
+                btn.addEventListener('click', event => {
+                    event.preventDefault();
+                    openModal(btn.dataset.modal);
+                });
+            });
+
+            const closeBtn = document.querySelector('[data-action="close-modal"]');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', event => {
+                    event.preventDefault();
+                    closeModalBtn();
+                });
+            }
+
+            const modal = document.getElementById('wikiModal');
+            if (modal) {
+                modal.addEventListener('click', event => {
+                    if (event.target === modal) closeModalBtn();
+                });
+            }
+        }
+
+        window.openModal = openModal;
+        window.closeModalBtn = closeModalBtn;
+        window.filterWiki = filterWiki;
+
+        bindWikiInteractions();
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') closeModalBtn();
+        });
+    </script>
+</body>
+</html>

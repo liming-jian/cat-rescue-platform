@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.miaoxing.business.mapper.AdoptionMapper">
+
+    <insert id="insert" parameterType="com.miaoxing.business.entity.Adoption" useGeneratedKeys="true" keyProperty="id">
+        insert into adoptions (cat_name, applicant_name, phone, housing, experience)
+        values (#{catName}, #{applicantName}, #{phone}, #{housing}, #{experience})
+    </insert>
+
+    <select id="findAllWithCatStatus" resultType="com.miaoxing.business.entity.view.AdoptionView">
+        select a.id,
+               a.cat_name,
+               a.applicant_name,
+               a.phone,
+               a.housing,
+               a.experience,
+               a.apply_date,
+               c.status as cat_status
+        from adoptions a
+        left join cats c on a.cat_name = c.name
+        order by a.id desc
+    </select>
+
+    <delete id="deleteById">
+        delete from adoptions where id = #{id}
+    </delete>
+</mapper>

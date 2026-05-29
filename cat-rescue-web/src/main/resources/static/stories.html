@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>喵星守护站 - 救助故事</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f6efe6;
+            --bg-soft: #fbf7f2;
+            --panel: rgba(255, 252, 247, 0.78);
+            --panel-solid: #fffaf4;
+            --line: rgba(126, 91, 63, 0.16);
+            --text: #4f3528;
+            --text-soft: #7d6355;
+            --primary: #8b5e3c;
+            --primary-deep: #6d4529;
+            --accent: #dca87f;
+            --accent-soft: #f2d8c1;
+            --success: #6f8f66;
+            --shadow-lg: 0 28px 60px rgba(87, 55, 31, 0.13);
+            --shadow-md: 0 16px 32px rgba(96, 61, 35, 0.10);
+            --radius-xl: 32px;
+            --radius-lg: 24px;
+            --radius-md: 18px;
+            --transition: 220ms ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Quicksand', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- Topbar Navigation --- */
+        .topbar {
+            position: sticky;
+            top: 14px;
+            z-index: 1000;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            background: rgba(255, 250, 244, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            box-shadow: 0 14px 38px rgba(94, 62, 39, 0.10);
+            border-radius: 999px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            margin: 18px auto 0;
+            width: min(1240px, calc(100% - 32px));
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(145deg, #a2704e, #7b4f31);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.26), 0 8px 20px rgba(122, 79, 49, 0.3);
+            flex-shrink: 0;
+        }
+
+        .brand-copy strong {
+            display: block;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.06rem;
+            letter-spacing: 0.06em;
+        }
+
+        .brand-copy span {
+            display: block;
+            font-size: 0.78rem;
+            color: var(--text-soft);
+            margin-top: 2px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-soft);
+            font-weight: 600;
+            font-size: 0.92rem;
+            padding: 8px 16px;
+            border-radius: 999px;
+            transition: all var(--transition);
+        }
+
+        .nav-links a:hover {
+            background: var(--accent-soft);
+            color: var(--primary);
+        }
+
+        .nav-links a.active {
+            background: linear-gradient(145deg, var(--primary), var(--primary-deep));
+            color: white;
+            box-shadow: 0 4px 14px rgba(139, 94, 60, 0.3);
+        }
+
+        /* --- Page Header --- */
+        .page-header {
+            text-align: center;
+            padding: 80px 20px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
+            opacity: 0.5;
+            z-index: 0;
+        }
+
+        .page-header h1 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 2.6rem;
+            color: var(--primary);
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.8s ease forwards 0.2s;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            color: var(--text-soft);
+            margin-top: 12px;
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.8s ease forwards 0.4s;
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Timeline --- */
+        .timeline-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px 80px 20px;
+            position: relative;
+        }
+
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 50px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--accent-soft), var(--accent), var(--accent-soft));
+            border-radius: 2px;
+        }
+
+        /* --- Story Item --- */
+        .story-item {
+            position: relative;
+            margin-bottom: 60px;
+            padding-left: 80px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .story-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Timeline dot */
+        .story-date-dot {
+            position: absolute;
+            left: 36px;
+            top: 20px;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(145deg, var(--accent), var(--primary));
+            border: 4px solid var(--bg);
+            border-radius: 50%;
+            z-index: 10;
+            box-shadow: 0 0 0 4px rgba(220, 168, 127, 0.25), 0 4px 12px rgba(139, 94, 60, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .story-date-dot::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        /* --- Story Card with 3D tilt --- */
+        .story-card {
+            background: var(--panel-solid);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .story-card:hover {
+            transform: translateY(-8px) rotateX(2deg) rotateY(-1deg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .story-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .story-card:hover img {
+            transform: scale(1.03);
+        }
+
+        .story-content {
+            padding: 32px;
+        }
+
+        .story-date-text {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.88rem;
+            margin-bottom: 6px;
+            display: inline-block;
+            background: var(--accent-soft);
+            padding: 4px 12px;
+            border-radius: 999px;
+        }
+
+        .story-content h2 {
+            margin: 12px 0 10px;
+            color: var(--primary);
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.4rem;
+        }
+
+        .story-content p {
+            line-height: 1.8;
+            color: var(--text-soft);
+            font-size: 0.98rem;
+        }
+
+        /* Stagger animation delays */
+        .story-item:nth-child(1) { transition-delay: 0s; }
+        .story-item:nth-child(2) { transition-delay: 0.1s; }
+        .story-item:nth-child(3) { transition-delay: 0.2s; }
+        .story-item:nth-child(4) { transition-delay: 0.3s; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .topbar {
+                border-radius: var(--radius-lg);
+                flex-direction: column;
+                gap: 12px;
+                padding: 14px;
+            }
+            .nav-links { gap: 4px; justify-content: center; }
+            .timeline-container::before { left: 20px; }
+            .story-item { padding-left: 50px; }
+            .story-date-dot { left: 6px; width: 26px; height: 26px; }
+            .page-header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="topbar">
+        <a href="index.html" class="brand">
+            <span class="brand-mark"><img src="图片/猫爪logo.png" alt="猫爪" style="width:100%;height:100%;object-fit:cover;border-radius:14px;"></span>
+            <span class="brand-copy">
+                <strong>喵星守护站</strong>
+                <span>城市流浪猫救助与领养平台</span>
+            </span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="wiki.html">百科</a></li>
+            <li><a href="adoption.html">领养中心</a></li>
+            <li><a href="stories.html" class="active">救助故事</a></li>
+            <li><a href="volunteer.html">志愿者</a></li>
+            <li><a href="donate.html">义卖</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-header">
+        <h1>暖心救助日记</h1>
+        <p>每一次相遇都是奇迹，记录从流浪到回家的全过程。</p>
+    </div>
+
+    <div class="timeline-container">
+
+        <div class="story-item">
+            <div class="story-date-dot"></div>
+            <div class="story-card">
+                <img src="http://localhost:8081/myImages/暖暖.png" alt="雨夜救助小橘猫">
+                <div class="story-content">
+                    <span class="story-date-text">2023年11月15日</span>
+                    <h2>雨夜中的"暖暖"</h2>
+                    <p>那是一个暴雨的夜晚，志愿者在小区的车底发现了一只全身湿透、瑟瑟发抖的小橘猫。它甚至没有力气发出声音。我们立即将它送往医院，经过三天的保温和输液，它终于吃下了第一口罐头。现在它叫"暖暖"，是个黏人的小胖子。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="story-item">
+            <div class="story-date-dot"></div>
+            <div class="story-card">
+                <img src="https://images.unsplash.com/photo-1533743983669-94fa5c4338ec?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="废墟中的奇迹">
+                <div class="story-content">
+                    <span class="story-date-text">2023年9月02日</span>
+                    <h2>废墟中的三花猫妈妈</h2>
+                    <p>在即将拆迁的工地废墟里，一只三花母猫死死守着它的一窝小猫不肯离去。面对轰鸣的挖掘机，它显得那么无助。我们的救援队连夜行动，使用了诱捕笼，成功在拆迁前一小时将一家五口全部救出。现在小猫们都已经找到了领养家庭。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="story-item">
+            <div class="story-date-dot"></div>
+            <div class="story-card">
+                <img src="https://images.unsplash.com/photo-1506755855567-92ff770e8d00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="信任的建立">
+                <div class="story-content">
+                    <span class="story-date-text">2023年6月20日</span>
+                    <h2>从哈气到露肚皮：警长"黑猫"的转变</h2>
+                    <p>"黑猫"是社区里出了名的凶猫，谁靠近就挠谁。其实它是因为曾经被人伤害过，才会如此应激。志愿者花了整整三个月，每天定点投喂，慢慢坐得离它近一点。直到那一天，它主动用头蹭了蹭志愿者的手，那一刻，所有的付出都值了。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="story-item">
+            <div class="story-date-dot"></div>
+            <div class="story-card">
+                <img src="http://localhost:8081/myImages/小狸花.png" alt="特殊的它">
+                <div class="story-content">
+                    <span class="story-date-text">2023年3月10日</span>
+                    <h2>只有三条腿的勇士</h2>
+                    <p>因为车祸，小狸花永远失去了它的右后腿。但截肢手术后的第二天，它就坚强地站了起来，努力适应新的行走方式。它的乐观感染了所有人，现在它被一对退休夫妇收养，是家里的开心果。</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 滚动淡入动画脚本 ---
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observerCallback = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+        const storyItems = document.querySelectorAll('.story-item');
+        storyItems.forEach(item => {
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>

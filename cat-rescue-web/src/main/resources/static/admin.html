@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>喵星守护站 - 管理员后台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f6efe6;
+            --bg-soft: #fbf7f2;
+            --panel: rgba(255, 252, 247, 0.92);
+            --panel-solid: #fffaf4;
+            --line: rgba(126, 91, 63, 0.12);
+            --text: #4f3528;
+            --text-soft: #7d6355;
+            --primary: #8b5e3c;
+            --primary-deep: #6d4529;
+            --accent: #dca87f;
+            --accent-soft: #f2d8c1;
+            --success: #6f8f66;
+            --danger: #d45b5b;
+            --info: #5b9ea6;
+            --sidebar-width: 240px;
+            --header-height: 60px;
+            --shadow-lg: 0 28px 60px rgba(87, 55, 31, 0.13);
+            --shadow-md: 0 16px 32px rgba(96, 61, 35, 0.10);
+            --shadow-sm: 0 6px 16px rgba(96, 61, 35, 0.07);
+            --radius-xl: 24px;
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --transition: 220ms ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Quicksand', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Floating paw background decoration */
+        .floating-paw {
+            position: fixed;
+            opacity: 0.035;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(1px);
+        }
+        .floating-paw.paw1 { top: 8%; right: 3%; width: 320px; height: 320px; animation: floatPaw1 24s ease-in-out infinite; }
+        .floating-paw.paw2 { bottom: 5%; left: 28%; width: 180px; height: 180px; animation: floatPaw2 18s ease-in-out infinite; }
+        .floating-paw.paw3 { top: 55%; right: 18%; width: 240px; height: 240px; animation: floatPaw3 22s ease-in-out infinite; }
+        .floating-paw.paw4 { top: 30%; left: 50%; width: 140px; height: 140px; animation: floatPaw1 28s ease-in-out infinite reverse; opacity: 0.025; }
+        .floating-paw.paw5 { bottom: 30%; right: 40%; width: 200px; height: 200px; animation: floatPaw2 20s ease-in-out infinite reverse; opacity: 0.02; }
+
+        @keyframes floatPaw1 {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            33% { transform: translateY(-30px) rotate(8deg) scale(1.05); }
+            66% { transform: translateY(-15px) rotate(-5deg) scale(0.95); }
+        }
+        @keyframes floatPaw2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(20px, -25px) rotate(-10deg); }
+            50% { transform: translate(-10px, -40px) rotate(5deg); }
+            75% { transform: translate(15px, -15px) rotate(-3deg); }
+        }
+        @keyframes floatPaw3 {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-35px) rotate(12deg); }
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(180deg, #5a3a24 0%, #7b4f31 100%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-brand {
+            padding: 24px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar-brand-img {
+            width: 48px; height: 48px; border-radius: 14px;
+            overflow: hidden; flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .sidebar-brand-text {
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        .sidebar-brand-text small {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: rgba(255,255,255,0.6);
+            margin-top: 2px;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            color: rgba(255,255,255,0.75);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+            margin-bottom: 4px;
+            text-decoration: none;
+        }
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+        .nav-item.active {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .nav-item .nav-icon { font-size: 1.1rem; width: 24px; text-align: center; }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .btn-logout {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: rgba(255,255,255,0.8);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all var(--transition);
+        }
+        .btn-logout:hover {
+            background: rgba(212, 91, 91, 0.3);
+            border-color: rgba(212, 91, 91, 0.5);
+            color: #fff;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            right: 0;
+            height: var(--header-height);
+            background: var(--panel);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+            z-index: 900;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+        .header-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .admin-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: var(--accent-soft);
+            border-radius: 20px;
+            font-size: 0.82rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .btn-home {
+            text-decoration: none; color: white;
+            background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+            padding: 8px 18px; border-radius: 20px; border: none;
+            font-weight: 600; font-size: 0.82rem; cursor: pointer;
+            box-shadow: 0 4px 12px rgba(139, 94, 60, 0.2);
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+        .btn-home:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(139, 94, 60, 0.3); }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding-top: var(--header-height);
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+        .content-wrapper {
+            padding: 28px 32px;
+            animation: fadeUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: var(--panel-solid);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 22px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        .stat-icon {
+            width: 52px; height: 52px;
+            border-radius: 14px;
+            display: grid; place-items: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .stat-icon.icon-cats { background: linear-gradient(135deg, #f2d8c1, #dca87f); }
+        .stat-icon.icon-pending { background: linear-gradient(135deg, #fde2b8, #f0a050); }
+        .stat-icon.icon-vol { background: linear-gradient(135deg, #c8e6c9, #6f8f66); }
+        .stat-icon.icon-adopt { background: linear-gradient(135deg, #b2dfdb, #5b9ea6); }
+        .stat-info { display: flex; flex-direction: column; }
+        .stat-number {
+            font-size: 1.8rem; font-weight: 700;
+            color: var(--primary); line-height: 1.2;
+        }
+        .stat-label {
+            font-size: 0.82rem; color: var(--text-soft);
+            margin-top: 2px;
+        }
+
+        /* Section Cards */
+        .section-card {
+            background: var(--panel-solid);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 0;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+        .section-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--line);
+            background: rgba(246, 239, 230, 0.4);
+        }
+        .section-card-header h2 {
+            color: var(--primary);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-card-header h2::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, var(--success), #5a7d52);
+            color: white; border: none; padding: 8px 18px;
+            border-radius: 18px; cursor: pointer;
+            font-weight: 600; font-size: 0.82rem;
+            box-shadow: 0 4px 12px rgba(111, 143, 102, 0.25);
+            transition: all var(--transition);
+        }
+        .btn-add:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(111, 143, 102, 0.35); }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+            color: white; padding: 14px 16px;
+            text-align: center; white-space: nowrap;
+            font-size: 0.85rem; font-weight: 600;
+        }
+        td {
+            padding: 13px 14px; border-bottom: 1px solid var(--line);
+            text-align: center; vertical-align: middle;
+            color: var(--text-soft); font-size: 0.88rem;
+        }
+        tr:last-child td { border-bottom: none; }
+        tbody tr:nth-child(even) { background: rgba(246, 239, 230, 0.4); }
+        tbody tr { transition: background var(--transition); }
+        tbody tr:hover { background: var(--accent-soft); }
+
+        .thumb-img {
+            width: 52px; height: 52px; object-fit: cover;
+            border-radius: 10px; border: 2px solid white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .status-tag {
+            padding: 5px 12px; border-radius: 14px;
+            font-size: 0.78rem; color: white;
+            display: inline-block; font-weight: 600;
+        }
+        .st-green { background: linear-gradient(135deg, #7cb87a, #5a9a58); }
+        .st-red { background: linear-gradient(135deg, #e07070, #c94c4c); }
+        .st-orange { background: linear-gradient(135deg, #f0a050, #d88530); }
+        .st-grey { background: linear-gradient(135deg, #b0b0b0, #909090); }
+
+        .btn-del {
+            background: var(--danger); color: white; border: none;
+            padding: 6px 12px; border-radius: 8px; cursor: pointer;
+            font-size: 0.78rem; margin-left: 6px; font-weight: 600;
+            transition: all var(--transition);
+        }
+        .btn-del:hover { background: #c04040; transform: scale(1.05); }
+
+        .btn-found {
+            background: linear-gradient(135deg, var(--info), #4a8a92);
+            color: white; border: none;
+            padding: 6px 12px; border-radius: 8px; cursor: pointer;
+            font-size: 0.78rem; font-weight: 600;
+            transition: all var(--transition);
+        }
+        .btn-found:hover { transform: scale(1.05); }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(79, 53, 40, 0.5);
+            backdrop-filter: blur(6px);
+            z-index: 2000; display: none;
+            justify-content: center; align-items: center;
+        }
+        .modal-box {
+            position: relative;
+            background: var(--panel-solid);
+            padding: 34px;
+            border-radius: var(--radius-xl);
+            width: 480px; max-height: 90vh; overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: var(--shadow-lg);
+            animation: popIn 0.3s ease;
+        }
+        @keyframes popIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .form-group { margin-bottom: 16px; text-align: left; }
+        .form-group label {
+            display: block; font-weight: 600;
+            margin-bottom: 7px; color: var(--text);
+            font-size: 0.9rem;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 12px 14px;
+            border: 2px solid var(--line); border-radius: 12px;
+            box-sizing: border-box; background: white;
+            font-family: inherit; font-size: 0.95rem;
+            transition: border-color var(--transition), box-shadow var(--transition);
+            outline: none;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(220, 168, 127, 0.15);
+        }
+
+        .btn-submit {
+            width: 100%; padding: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+            color: white; border: none; border-radius: 12px;
+            font-weight: 700; cursor: pointer; margin-top: 12px;
+            font-size: 1rem;
+            transition: all var(--transition);
+        }
+        .btn-submit:hover { transform: scale(1.02); box-shadow: 0 6px 20px rgba(139, 94, 60, 0.3); }
+
+        .btn-close {
+            width: 100%; padding: 12px;
+            background: transparent; color: var(--text-soft);
+            border: none; cursor: pointer; margin-top: 6px;
+            font-size: 0.9rem;
+            transition: color var(--transition);
+        }
+        .btn-close:hover { color: var(--danger); }
+
+        #img-preview {
+            width: 100%; height: 200px; object-fit: contain;
+            margin-top: 10px; border-radius: 12px;
+            border: 2px dashed var(--line); display: none;
+            background: white;
+        }
+
+        /* Animations */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hamburger menu for mobile */
+        .hamburger {
+            display: none;
+            position: fixed;
+            top: 14px;
+            left: 14px;
+            z-index: 1100;
+            width: 40px; height: 40px;
+            background: var(--primary);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .hamburger span {
+            display: block;
+            width: 20px; height: 2px;
+            background: #fff;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: 999;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay.open { display: block; }
+            .hamburger { display: flex; }
+            .header { left: 0; padding: 0 16px 0 60px; }
+            .main-content { margin-left: 0; }
+            .content-wrapper { padding: 20px 16px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .modal-box { width: 95%; padding: 24px; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Floating paw decorations -->
+<img src="图片/猫猫爪子.png" class="floating-paw paw1" alt="">
+<img src="图片/猫猫爪子.png" class="floating-paw paw2" alt="">
+<img src="图片/猫猫爪子.png" class="floating-paw paw3" alt="">
+<img src="图片/猫猫爪子.png" class="floating-paw paw4" alt="">
+<img src="图片/猫猫爪子.png" class="floating-paw paw5" alt="">
+
+<!-- Hamburger button (mobile) -->
+<button class="hamburger" onclick="toggleSidebar()">
+    <span></span><span></span><span></span>
+</button>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <div class="sidebar-brand-img">
+            <img src="图片/猫爪logo.png" alt="猫爪" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">
+        </div>
+        <div class="sidebar-brand-text">
+            喵星守护站
+            <small>管理后台</small>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <a class="nav-item active" onclick="scrollToSection('stats')">
+            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span> 仪表盘
+        </a>
+        <a class="nav-item" onclick="scrollToSection('cats')">
+            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5c-1.2-2-4-3-5-2s0 3 1 4c-2 1-3 3-3 5 0 3 3 5 7 5s7-2 7-5c0-2-1-4-3-5 1-1 2-3 1-4s-3.8 0-5 2z"/></svg></span> 猫咪管理
+        </a>
+        <a class="nav-item" onclick="scrollToSection('pets')">
+            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span> 寻猫招领
+        </a>
+        <a class="nav-item" onclick="scrollToSection('adopt')">
+            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> 领养申请
+        </a>
+        <a class="nav-item" onclick="scrollToSection('vol')">
+            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> 志愿者管理
+        </a>
+        <a class="nav-item" onclick="scrollToSection('msg')">
+            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span> 用户留言
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <button class="btn-logout" onclick="window.location.href='index.html'">退出后台</button>
+    </div>
+</aside>
+
+<!-- Header -->
+<header class="header">
+    <div class="header-title">喵星守护站 - 管理后台</div>
+    <div class="header-right">
+        <div class="admin-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> 管理员</div>
+        <button onclick="window.location.href='index.html'" class="btn-home">返回首页</button>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="main-content">
+    <div class="content-wrapper">
+        <!-- Stats -->
+        <div class="stats-grid" id="section-stats">
+            <div class="stat-card">
+                <div class="stat-icon icon-cats"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8b5e3c" stroke-width="2"><path d="M12 5c-1.2-2-4-3-5-2s0 3 1 4c-2 1-3 3-3 5 0 3 3 5 7 5s7-2 7-5c0-2-1-4-3-5 1-1 2-3 1-4s-3.8 0-5 2z"/></svg></div>
+                <div class="stat-info">
+                    <span class="stat-number" id="statCats">0</span>
+                    <span class="stat-label">猫咪总数</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-pending"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d28c47" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                <div class="stat-info">
+                    <span class="stat-number" id="statPending">0</span>
+                    <span class="stat-label">待审核申请</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-vol"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6f8f66" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                <div class="stat-info">
+                    <span class="stat-number" id="statVol">0</span>
+                    <span class="stat-label">志愿者总数</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-adopt"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5b9ea6" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+                <div class="stat-info">
+                    <span class="stat-number" id="statAdopt">0</span>
+                    <span class="stat-label">已领养</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cats Section -->
+        <div class="section-card" id="section-cats">
+            <div class="section-card-header">
+                <h2>待领养猫咪库</h2>
+                <button class="btn-add" onclick="openModal('cat')">+ 发布新猫咪</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>照片</th><th>名字</th><th>信息</th><th>状态</th><th>操作</th></tr></thead>
+                    <tbody id="catsTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Lost Pets Section -->
+        <div class="section-card" id="section-pets">
+            <div class="section-card-header">
+                <h2>寻猫 & 招领信息</h2>
+                <button class="btn-add" onclick="openModal('pet')">+ 发布寻猫/招领</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>照片</th><th>宠物名</th><th>状态</th><th>联系方式</th><th>操作</th></tr></thead>
+                    <tbody id="petTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Adoption Applications -->
+        <div class="section-card" id="section-adopt">
+            <div class="section-card-header">
+                <h2>领养申请列表</h2>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>意向猫咪</th><th>申请人</th><th>电话</th><th>住房/经验</th><th>操作</th></tr></thead>
+                    <tbody id="adoptTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Volunteers -->
+        <div class="section-card" id="section-vol">
+            <div class="section-card-header">
+                <h2>志愿者申请列表</h2>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>姓名</th><th>电话</th><th>申请理由</th><th>操作</th></tr></thead>
+                    <tbody id="volTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="section-card" id="section-msg">
+            <div class="section-card-header">
+                <h2>用户留言</h2>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>姓名</th><th>联系方式</th><th>留言内容</th><th>提交时间</th></tr></thead>
+                    <tbody id="msgTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+    <div class="modal-box">
+        <h3 id="modalTitle" style="text-align:center; color:var(--primary); margin-top:0; margin-bottom:20px;">标题</h3>
+        <form id="dataForm"></form>
+        <button class="btn-submit" onclick="submitData()">确认提交</button>
+        <button class="btn-close" onclick="closeModal()">取消</button>
+    </div>
+</div>
+
+<script>
+    let currentType = '', tempImg = '';
+    const defaultImg = 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400';
+
+    // Sidebar navigation
+    function scrollToSection(id) {
+        const el = document.getElementById('section-' + id);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        // Update active state
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+        // Close sidebar on mobile
+        if (window.innerWidth <= 768) toggleSidebar();
+    }
+
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
+        document.getElementById('sidebarOverlay').classList.toggle('open');
+    }
+
+    // Phone validation
+    function isValidPhone(phone) {
+        return /^1[3-9]\d{9}$/.test(phone);
+    }
+
+    loadAllData();
+    setInterval(loadAllData, 1000);
+
+    function loadAllData() {
+        // --- Cats ---
+        fetch('http://localhost:8081/adoption-cats').then(r=>r.json()).then(data => {
+            document.getElementById('statCats').textContent = data.length;
+            const monthAdopted = data.filter(cat => cat.status === '已领养').length;
+            document.getElementById('statAdopt').textContent = monthAdopted;
+
+            const catImageMap = {
+                '布丁': '图片/三花猫.png',
+                '大橘': '图片/橘猫.png',
+                '奥利奥': '图片/奥利奥.png',
+                '汤圆': '图片/汤圆.png'
+            };
+            document.getElementById('catsTable').innerHTML = data.map(cat => {
+                const isAvail = cat.status === '待领养';
+                const statusTag = isAvail ? 'st-green' : 'st-grey';
+                const btns = isAvail ? `<button class="btn-found" onclick="markAdopted(${cat.id})">标记已领养</button>` : '<span style="color:#aaa; font-size:0.8rem">无需操作</span>';
+                const catImg = catImageMap[cat.name] || cat.imageUrl || defaultImg;
+                return `<tr>
+                    <td><img src="${catImg}" class="thumb-img" onerror="this.src='${defaultImg}'"></td>
+                    <td><strong>${cat.name}</strong></td>
+                    <td>${cat.age || '-'} / ${cat.gender || '-'}</td>
+                    <td><span class="status-tag ${statusTag}">${cat.status}</span></td>
+                    <td>${btns} <button class="btn-del" onclick="del('adoption-cats', ${cat.id})">删除</button></td>
+                </tr>`;
+            }).join('') || '<tr><td colspan="5">暂无数据</td></tr>';
+        });
+
+        // --- Lost Pets ---
+        fetch('http://localhost:8081/lost-pets').then(r=>r.json()).then(data => {
+            function getPetImage(pet) {
+                const desc = (pet.description || '') + (pet.petName || '');
+                if (desc.includes('英短蓝猫') || desc.includes('蓝猫') || desc.includes('铃铛')) return '图片/英短蓝猫.png';
+                if (desc.includes('三花猫') || desc.includes('三花') || desc.includes('小花')) return '图片/三花猫.png';
+                if (pet.imageUrl) return pet.imageUrl;
+                return defaultImg;
+            }
+            document.getElementById('petTable').innerHTML = data.map(pet => {
+                let stClass = 'st-green', stText = '已回家';
+                if(pet.status === 'lost') { stClass='st-red'; stText='急寻 (丢失)'; }
+                else if(pet.status === 'picking') { stClass='st-orange'; stText='招领 (待领)'; }
+
+                const petName = pet.petName || pet.name || '未知';
+                const petImg = getPetImage(pet);
+                const btns = pet.status !== 'returned' ? `<button class="btn-found" onclick="markReturned(${pet.id})">标记已回</button>` : '<span style="color:#aaa; font-size:0.8rem">无需操作</span>';
+
+                return `<tr>
+                    <td><img src="${petImg}" class="thumb-img" onerror="this.src='${defaultImg}'"></td>
+                    <td>${petName}</td>
+                    <td><span class="status-tag ${stClass}">${stText}</span></td>
+                    <td>${pet.contact}</td>
+                    <td>${btns} <button class="btn-del" onclick="del('lost-pets', ${pet.id})">删除</button></td>
+                </tr>`;
+            }).join('') || '<tr><td colspan="5">暂无数据</td></tr>';
+        });
+
+        // --- Adoptions ---
+        fetch('http://localhost:8081/adoptions').then(r=>r.json()).then(data => {
+            document.getElementById('statPending').textContent = data.length;
+            if(data.length === 0) {
+                document.getElementById('adoptTable').innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">暂无申请记录</td></tr>';
+            } else {
+                document.getElementById('adoptTable').innerHTML = data.map(i=>`
+                    <tr>
+                        <td><strong>${i.cat_name}</strong></td>
+                        <td>${i.applicant_name}</td>
+                        <td>${i.phone}</td>
+                        <td style="max-width:300px; font-size:0.85rem;">
+                            <div style="margin-bottom:4px;">住房: ${i.housing}</div>
+                            <div style="color:var(--text-soft);">经验: ${i.experience}</div>
+                        </td>
+                        <td><button class="btn-del" onclick="del('adoptions',${i.id})">删除</button></td>
+                    </tr>
+                `).join('');
+            }
+        });
+
+        // --- Volunteers ---
+        fetch('http://localhost:8081/volunteers').then(r=>r.json()).then(data => {
+            document.getElementById('statVol').textContent = data.length;
+            if(data.length === 0) {
+                document.getElementById('volTable').innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">暂无志愿者申请</td></tr>';
+            } else {
+                document.getElementById('volTable').innerHTML = data.map(i=>`
+                    <tr>
+                        <td><strong>${i.name}</strong></td>
+                        <td>${i.phone}</td>
+                        <td style="max-width:300px; font-size:0.85rem;">${i.reason}</td>
+                        <td><button class="btn-del" onclick="del('volunteers',${i.id})">删除</button></td>
+                    </tr>
+                `).join('');
+            }
+        });
+
+        // --- Messages ---
+        fetch('http://localhost:8081/contact/messages').then(r=>r.json()).then(data => {
+            if(data.length === 0) {
+                document.getElementById('msgTable').innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">暂无用户留言</td></tr>';
+            } else {
+                document.getElementById('msgTable').innerHTML = data.map(i=>`
+                    <tr>
+                        <td><strong>${i.name}</strong></td>
+                        <td>${i.contact}</td>
+                        <td style="max-width:360px; font-size:0.85rem; text-align:left;">${i.message}</td>
+                        <td>${i.created_at || '-'}</td>
+                    </tr>
+                `).join('');
+            }
+        });
+    }
+
+    function markAdopted(id) {
+        if(confirm('确认标记已领养？(将通知所有用户)')) {
+            fetch(`http://localhost:8081/adoption-cats/${id}`, {
+                method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({status:'已领养'})
+            }).then(r=>r.json()).then(res => { if(res.success) loadAllData(); });
+        }
+    }
+
+    function markReturned(id) {
+        if(confirm('确认标记已回家？(将通知所有用户)')) {
+            fetch(`http://localhost:8081/lost-pets/${id}`, {
+                method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({status:'returned'})
+            }).then(r=>r.json()).then(res => { if(res.success) loadAllData(); });
+        }
+    }
+
+    function del(table, id) {
+        if(confirm('确定要删除这条记录吗？(不可恢复)')) {
+            fetch(`http://localhost:8081/${table}/${id}`, {method:'DELETE'}).then(r=>r.json()).then(res => { if(res.success) loadAllData(); });
+        }
+    }
+
+    function openModal(type) {
+        currentType = type; tempImg = '';
+        document.getElementById('modal').style.display = 'flex';
+        const imgPart = `<div class="form-group"><label>照片 (支持预览)</label><input type="file" accept="image/*" onchange="encodeImg(this)"><img id="img-preview" src=""></div>`;
+
+        if (type === 'cat') {
+            document.getElementById('modalTitle').innerText = '发布新猫咪';
+            document.getElementById('dataForm').innerHTML = `
+                <div class="form-group"><label>名字</label><input id="c_name"></div>
+                <div class="form-group">
+                    <label>年龄</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="number" id="c_age_num" placeholder="例如: 3" style="flex:1" min="0">
+                        <select id="c_age_unit" style="width:80px">
+                            <option value="岁">岁</option>
+                            <option value="个月">个月</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group"><label>性别</label><select id="c_gender"><option>公</option><option>母</option></select></div>
+                <div class="form-group"><label>状态</label><select id="c_status"><option>待领养</option><option>已领养</option></select></div>
+                <div class="form-group"><label>描述</label><textarea id="c_desc"></textarea></div>
+                ${imgPart}
+            `;
+        } else {
+            document.getElementById('modalTitle').innerText = '发布寻猫/招领';
+            document.getElementById('dataForm').innerHTML = `
+                <div class="form-group"><label>宠物名</label><input id="p_name"></div>
+                <div class="form-group"><label>类型</label><select id="p_status"><option value="lost">急寻 (我丢猫了)</option><option value="picking">招领 (我捡到了)</option></select></div>
+                <div class="form-group"><label>描述</label><textarea id="p_desc"></textarea></div>
+                <div class="form-group"><label>联系电话 (限中国手机号)</label><input id="p_contact" placeholder="请输入11位手机号"></div>
+                ${imgPart}
+            `;
+        }
+    }
+
+    function submitData() {
+        let url = currentType === 'cat' ? 'http://localhost:8081/adoption-cats' : 'http://localhost:8081/lost-pets';
+        let body = {};
+
+        if(currentType === 'cat') {
+            const ageNum = document.getElementById('c_age_num').value;
+            const ageUnit = document.getElementById('c_age_unit').value;
+            if(!ageNum) { alert('请填写年龄数字'); return; }
+            const finalAge = ageNum + ageUnit;
+
+            body = {
+                name:document.getElementById('c_name').value,
+                age: finalAge,
+                gender:document.getElementById('c_gender').value,
+                status:document.getElementById('c_status').value,
+                description:document.getElementById('c_desc').value,
+                image_url:tempImg
+            };
+        } else {
+            const contact = document.getElementById('p_contact').value;
+            if (!isValidPhone(contact)) {
+                alert('请填写正确的11位中国手机号码！');
+                return;
+            }
+
+            body = {
+                name:document.getElementById('p_name').value,
+                status:document.getElementById('p_status').value,
+                desc:document.getElementById('p_desc').value,
+                contact: contact,
+                img:tempImg
+            };
+        }
+
+        if(!tempImg) { alert('必须上传图片'); return; }
+
+        document.querySelector('.btn-submit').innerText = '上传中...';
+        fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)}).then(r=>r.json()).then(res=>{
+            document.querySelector('.btn-submit').innerText = '确认提交';
+            if(res.success) { alert('发布成功！'); closeModal(); loadAllData(); } else alert('失败: ' + res.message);
+        });
+    }
+
+    function encodeImg(input) {
+        const f=input.files[0]; if(!f)return;
+        const r=new FileReader();
+        r.onload=e=>{
+            tempImg=e.target.result;
+            document.getElementById('img-preview').src = tempImg;
+            document.getElementById('img-preview').style.display = 'block';
+        };
+        r.readAsDataURL(f);
+    }
+    function closeModal() { document.getElementById('modal').style.display='none'; }
+</script>
+</body>
+</html>

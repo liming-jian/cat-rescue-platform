@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - 页面走丢了</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f6efe6;
+            --bg-soft: #fbf7f2;
+            --panel: rgba(255, 252, 247, 0.78);
+            --panel-solid: #fffaf4;
+            --line: rgba(126, 91, 63, 0.16);
+            --text: #4f3528;
+            --text-soft: #7d6355;
+            --primary: #8b5e3c;
+            --primary-deep: #6d4529;
+            --accent: #dca87f;
+            --accent-soft: #f2d8c1;
+            --success: #6f8f66;
+            --shadow-lg: 0 28px 60px rgba(87, 55, 31, 0.13);
+            --shadow-md: 0 16px 32px rgba(96, 61, 35, 0.10);
+            --radius-xl: 32px;
+            --radius-lg: 24px;
+            --radius-md: 18px;
+            --transition: 220ms ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Quicksand', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Floating paw particles */
+        .paw-particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .paw-particle {
+            position: absolute;
+            opacity: 0;
+            animation: floatPaw linear infinite;
+        }
+
+        @keyframes floatPaw {
+            0% { opacity: 0; transform: translateY(100vh) rotate(0deg) scale(0.5); }
+            10% { opacity: 0.18; }
+            90% { opacity: 0.18; }
+            100% { opacity: 0; transform: translateY(-100px) rotate(360deg) scale(1); }
+        }
+
+        /* Main container */
+        .error-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 40px;
+        }
+
+        /* Animated cat SVG */
+        .cat-peek {
+            width: 200px;
+            height: 160px;
+            animation: catBounce 3s ease-in-out infinite;
+        }
+
+        @keyframes catBounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-8px) rotate(-2deg); }
+            75% { transform: translateY(-4px) rotate(2deg); }
+        }
+
+        /* 404 number */
+        .error-code {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 9rem;
+            font-weight: 700;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--primary), var(--accent), var(--primary-deep));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease-in-out infinite, floatNum 3.5s ease-in-out infinite;
+            letter-spacing: -4px;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes floatNum {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .error-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-top: 8px;
+        }
+
+        .error-desc {
+            font-size: 1.1rem;
+            color: var(--text-soft);
+            line-height: 1.7;
+            max-width: 420px;
+        }
+
+        /* Home button */
+        .home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 42px;
+            margin-top: 16px;
+            background: linear-gradient(145deg, var(--primary), var(--primary-deep));
+            color: white;
+            text-decoration: none;
+            border-radius: 999px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Quicksand', sans-serif;
+            box-shadow: 0 12px 32px rgba(139, 94, 60, 0.3);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+        }
+
+        .home-btn:hover {
+            transform: scale(1.08) translateY(-3px);
+            box-shadow: 0 18px 44px rgba(139, 94, 60, 0.38);
+        }
+
+        .home-btn:active {
+            transform: scale(0.97);
+        }
+
+        .home-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Decorative blobs */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            z-index: 0;
+        }
+        .blob-1 {
+            width: 400px; height: 400px;
+            background: var(--accent-soft);
+            top: -100px; right: -100px;
+        }
+        .blob-2 {
+            width: 300px; height: 300px;
+            background: var(--accent);
+            bottom: -80px; left: -80px;
+            opacity: 0.2;
+        }
+
+        @media (max-width: 600px) {
+            .error-code { font-size: 6rem; }
+            .error-title { font-size: 1.4rem; }
+            .cat-peek { width: 150px; height: 120px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Decorative blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <!-- Floating paw particles -->
+    <div class="paw-particles" id="pawParticles"></div>
+
+    <!-- Main content -->
+    <div class="error-container">
+        <!-- Animated cat peeking SVG -->
+        <svg class="cat-peek" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Cat ears -->
+            <polygon points="55,60 70,20 85,60" fill="var(--primary)" opacity="0.9"/>
+            <polygon points="115,60 130,20 145,60" fill="var(--primary)" opacity="0.9"/>
+            <!-- Inner ears -->
+            <polygon points="62,55 70,28 78,55" fill="var(--accent)"/>
+            <polygon points="122,55 130,28 138,55" fill="var(--accent)"/>
+            <!-- Head -->
+            <ellipse cx="100" cy="90" rx="52" ry="45" fill="var(--primary)"/>
+            <!-- Face mask -->
+            <ellipse cx="100" cy="98" rx="38" ry="32" fill="var(--accent-soft)"/>
+            <!-- Eyes -->
+            <ellipse cx="82" cy="85" rx="8" ry="9" fill="white"/>
+            <ellipse cx="118" cy="85" rx="8" ry="9" fill="white"/>
+            <ellipse cx="83" cy="86" rx="5" ry="6" fill="var(--primary-deep)">
+                <animate attributeName="cy" values="86;84;86" dur="3s" repeatCount="indefinite"/>
+            </ellipse>
+            <ellipse cx="117" cy="86" rx="5" ry="6" fill="var(--primary-deep)">
+                <animate attributeName="cy" values="86;84;86" dur="3s" repeatCount="indefinite"/>
+            </ellipse>
+            <!-- Eye shine -->
+            <circle cx="85" cy="83" r="2" fill="white"/>
+            <circle cx="119" cy="83" r="2" fill="white"/>
+            <!-- Nose -->
+            <ellipse cx="100" cy="98" rx="4" ry="3" fill="var(--primary-deep)"/>
+            <!-- Mouth -->
+            <path d="M94 102 Q100 108 106 102" stroke="var(--primary-deep)" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <!-- Whiskers -->
+            <line x1="60" y1="92" x2="78" y2="95" stroke="var(--primary-deep)" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+            <line x1="58" y1="100" x2="77" y2="100" stroke="var(--primary-deep)" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+            <line x1="122" y1="95" x2="140" y2="92" stroke="var(--primary-deep)" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+            <line x1="123" y1="100" x2="142" y2="100" stroke="var(--primary-deep)" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+            <!-- Paws on edge -->
+            <ellipse cx="80" cy="138" rx="14" ry="10" fill="var(--primary)"/>
+            <ellipse cx="120" cy="138" rx="14" ry="10" fill="var(--primary)"/>
+            <!-- Paw pads -->
+            <circle cx="75" cy="137" r="3" fill="var(--accent)"/>
+            <circle cx="80" cy="134" r="3" fill="var(--accent)"/>
+            <circle cx="85" cy="137" r="3" fill="var(--accent)"/>
+            <circle cx="115" cy="137" r="3" fill="var(--accent)"/>
+            <circle cx="120" cy="134" r="3" fill="var(--accent)"/>
+            <circle cx="125" cy="137" r="3" fill="var(--accent)"/>
+            <!-- Edge/surface the cat is peeking over -->
+            <rect x="0" y="132" width="200" height="30" rx="4" fill="var(--panel-solid)"/>
+        </svg>
+
+        <div class="error-code">404</div>
+        <h2 class="error-title">哎呀，页面走丢了！</h2>
+        <p class="error-desc">这里没有小鱼干，也没有你要找的页面。<br>它可能被调皮的喵星人藏起来了。</p>
+
+        <a href="index.html" class="home-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            带我回家
+        </a>
+    </div>
+
+    <script>
+        // Generate floating paw particles
+        const container = document.getElementById('pawParticles');
+        const pawSVG = `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><ellipse cx="6.6" cy="11" rx="2.05" ry="2.7" transform="rotate(-18 6.6 11)"/><ellipse cx="9.6" cy="6.5" rx="1.9" ry="2.55"/><ellipse cx="14.4" cy="6.5" rx="1.9" ry="2.55"/><ellipse cx="17.4" cy="11" rx="2.05" ry="2.7" transform="rotate(18 17.4 11)"/><path d="M12 12.6c-3.3 0-5.6 2.4-5.6 5.1 0 1.95 1.55 3.3 3.4 3.3 0.95 0 1.45-0.5 2.2-0.5s1.25 0.5 2.2 0.5c1.85 0 3.4-1.35 3.4-3.3 0-2.7-2.3-5.1-5.6-5.1Z"/></svg>`;
+
+        for (let i = 0; i < 12; i++) {
+            const paw = document.createElement('div');
+            paw.className = 'paw-particle';
+            paw.innerHTML = pawSVG;
+            paw.style.left = Math.random() * 100 + '%';
+            paw.style.width = (20 + Math.random() * 20) + 'px';
+            paw.style.color = 'var(--accent)';
+            paw.style.animationDuration = (8 + Math.random() * 12) + 's';
+            paw.style.animationDelay = (Math.random() * 10) + 's';
+            container.appendChild(paw);
+        }
+    </script>
+</body>
+</html>

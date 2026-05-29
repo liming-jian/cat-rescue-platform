@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.miaoxing.business.mapper.SystemNotificationMapper">
+
+    <select id="findLatest" resultType="com.miaoxing.business.entity.SystemNotification">
+        select id, message, target, created_at
+        from system_notifications
+        order by id desc
+        limit #{limit}
+    </select>
+
+    <insert id="insert">
+        insert into system_notifications (message, target)
+        values (#{message}, #{target})
+    </insert>
+</mapper>

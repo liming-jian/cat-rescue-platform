@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>喵星守护站 - 领养中心</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Noto+Serif+SC:wght@500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f6efe6;
+            --bg-soft: #fbf7f2;
+            --panel: rgba(255, 251, 246, 0.82);
+            --panel-strong: #fffaf4;
+            --line: rgba(126, 91, 63, 0.16);
+            --text: #4f3528;
+            --text-soft: #7d6355;
+            --primary: #8b5e3c;
+            --primary-deep: #6d4529;
+            --accent: #dca87f;
+            --accent-soft: #f2d8c1;
+            --danger: #c56d60;
+            --success: #7b9d73;
+            --shadow-lg: 0 26px 56px rgba(87, 55, 31, 0.12);
+            --shadow-md: 0 16px 30px rgba(96, 61, 35, 0.09);
+            --radius-xl: 34px;
+            --radius-lg: 26px;
+            --radius-md: 18px;
+            --container: 1240px;
+            --transition: 220ms ease;
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Quicksand', 'Microsoft YaHei', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 10% 10%, rgba(220, 168, 127, 0.18), transparent 26%),
+                radial-gradient(circle at 88% 14%, rgba(139, 94, 60, 0.10), transparent 22%),
+                linear-gradient(180deg, #fcf7f1 0%, #f6efe6 45%, #f4ecdf 100%);
+            cursor: url('https://cdn-icons-png.flaticon.com/32/1864/1864514.png'), auto;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.24;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.16) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.16) 1px, transparent 1px);
+            background-size: 32px 32px;
+            mask-image: radial-gradient(circle at center, black 35%, transparent 100%);
+        }
+
+        a { color: inherit; text-decoration: none; }
+        img { display: block; max-width: 100%; }
+
+        .shell {
+            width: min(var(--container), calc(100% - 32px));
+            margin: 18px auto 42px;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 14px;
+            z-index: 1000;
+            backdrop-filter: blur(18px);
+            background: rgba(255, 250, 244, 0.72);
+            border: 1px solid rgba(255,255,255,0.55);
+            box-shadow: 0 14px 38px rgba(94, 62, 39, 0.10);
+            border-radius: 999px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 180px;
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(145deg, #a2704e, #7b4f31);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.26), 0 8px 20px rgba(122, 79, 49, 0.3);
+        }
+
+        .brand-copy strong {
+            display: block;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.06rem;
+            letter-spacing: 0.06em;
+        }
+
+        .brand-copy span {
+            display: block;
+            font-size: 0.78rem;
+            color: var(--text-soft);
+            margin-top: 2px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 0;
+            padding: 0;
+            flex: 1;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 0 16px;
+            border-radius: 999px;
+            color: var(--text-soft);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary-deep);
+            background: rgba(255,255,255,0.72);
+            box-shadow: inset 0 0 0 1px rgba(139, 94, 60, 0.12);
+        }
+
+        .hero {
+            margin-top: 22px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 38px;
+            padding: 56px 46px 42px;
+            background:
+                linear-gradient(118deg, rgba(56, 34, 20, 0.84) 0%, rgba(84, 52, 34, 0.56) 40%, rgba(255, 244, 232, 0.06) 100%),
+                url('https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=1800') center/cover;
+            color: #fffaf4;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            right: -110px;
+            bottom: -140px;
+            width: 360px;
+            height: 360px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 68%);
+        }
+
+        .hero-grid {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(320px, 410px);
+            gap: 28px;
+            align-items: end;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 40px;
+            padding: 0 14px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.16);
+            backdrop-filter: blur(8px);
+            font-size: 0.84rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            margin: 24px 0 16px;
+            font-family: 'Noto Serif SC', 'Cormorant Garamond', serif;
+            font-size: clamp(2.6rem, 4.5vw, 4.3rem);
+            line-height: 1.16;
+            letter-spacing: 0.03em;
+        }
+
+        .hero p {
+            margin: 0;
+            max-width: 620px;
+            line-height: 1.92;
+            color: rgba(255,244,232,0.88);
+            font-size: 1.04rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 28px;
+        }
+
+        .hero-btn,
+        .hero-admin {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 48px;
+            padding: 0 22px;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+        }
+
+        .hero-btn {
+            color: #3d271b;
+            background: linear-gradient(135deg, #f4d6bf, #e3b289);
+            box-shadow: 0 18px 30px rgba(41, 25, 15, 0.18);
+        }
+
+        .hero-admin {
+            color: #fff;
+            background: rgba(255,255,255,0.10);
+            border: 1px solid rgba(255,255,255,0.18);
+            backdrop-filter: blur(8px);
+        }
+
+        .hero-btn:hover,
+        .hero-admin:hover { transform: translateY(-2px); }
+
+        .hero-panel {
+            padding: 24px;
+            border-radius: 28px;
+            background: rgba(255, 250, 244, 0.88);
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.56);
+            box-shadow: 0 24px 48px rgba(30, 19, 12, 0.16);
+            backdrop-filter: blur(18px);
+        }
+
+        .hero-panel strong {
+            display: block;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.28rem;
+            margin-bottom: 10px;
+        }
+
+        .hero-panel p {
+            margin: 0;
+            color: var(--text-soft);
+            font-size: 0.94rem;
+            line-height: 1.82;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .hero-stat {
+            padding: 14px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.82);
+            border: 1px solid rgba(139, 94, 60, 0.10);
+        }
+
+        .hero-stat strong {
+            display: block;
+            margin: 0;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            color: var(--primary);
+        }
+
+        .hero-stat span {
+            display: block;
+            margin-top: 4px;
+            color: var(--text-soft);
+            font-size: 0.83rem;
+            line-height: 1.65;
+        }
+
+        .section-card {
+            margin-top: 28px;
+            background: var(--panel);
+            border: 1px solid rgba(255,255,255,0.56);
+            border-radius: 34px;
+            padding: 32px;
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(18px);
+        }
+
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .section-head h2 {
+            margin: 0;
+            font-family: 'Noto Serif SC', serif;
+            font-size: clamp(1.8rem, 3vw, 2.3rem);
+            letter-spacing: 0.03em;
+        }
+
+        .section-head p {
+            margin: 10px 0 0;
+            color: var(--text-soft);
+            line-height: 1.82;
+            max-width: 700px;
+        }
+
+        .adoption-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .cat-card {
+            position: relative;
+            min-height: 420px;
+            border-radius: 28px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 18px 32px rgba(96, 61, 35, 0.10);
+            border: 1px solid rgba(139, 94, 60, 0.08);
+        }
+
+        .cat-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 360ms ease;
+        }
+
+        .cat-card:hover img { transform: scale(1.05); }
+
+        .card-overlay {
+            position: absolute;
+            inset: auto 0 0 0;
+            padding: 22px;
+            background: linear-gradient(to top, rgba(54, 33, 20, 0.96), rgba(54, 33, 20, 0.58), rgba(54, 33, 20, 0.10));
+            color: #fffaf4;
+        }
+
+        .status-chip {
+            display: inline-flex;
+            align-items: center;
+            min-height: 34px;
+            padding: 0 12px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            backdrop-filter: blur(8px);
+        }
+
+        .status-open {
+            color: #fffaf4;
+            background: rgba(123, 157, 115, 0.88);
+        }
+
+        .status-close {
+            color: #fffaf4;
+            background: rgba(117, 99, 88, 0.88);
+        }
+
+        .card-overlay h3 {
+            margin: 0;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.45rem;
+            color: #ffe1c8;
+        }
+
+        .tags {
+            margin: 10px 0 8px;
+            color: rgba(255,245,235,0.82);
+            font-size: 0.9rem;
+        }
+
+        .desc {
+            margin: 0;
+            line-height: 1.8;
+            color: rgba(255,245,235,0.92);
+            min-height: 54px;
+            font-size: 0.93rem;
+        }
+
+        .btn-adopt {
+            margin-top: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 0 18px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #f4d6bf, #e3b289);
+            color: #3d271b;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-adopt:hover { transform: translateY(-2px); }
+
+        .btn-disabled {
+            background: rgba(214, 205, 197, 0.9) !important;
+            color: #6d6159;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(71, 45, 29, 0.52);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.24s ease;
+            backdrop-filter: blur(8px);
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: linear-gradient(180deg, rgba(255, 251, 246, 0.98), rgba(255, 247, 239, 0.94));
+            width: min(560px, 100%);
+            padding: 30px;
+            border-radius: 28px;
+            position: relative;
+            transform: translateY(44px);
+            transition: transform 0.24s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.72);
+            box-shadow: 0 24px 50px rgba(54, 33, 20, 0.16);
+        }
+
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .close-btn {
+            position: absolute;
+            top: 14px;
+            right: 18px;
+            width: 40px;
+            height: 40px;
+            border-radius: 14px;
+            border: none;
+            background: rgba(220, 168, 127, 0.14);
+            color: var(--primary);
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+
+        .form-title {
+            margin: 0 0 10px;
+            font-family: 'Noto Serif SC', serif;
+            color: var(--primary);
+            font-size: 1.85rem;
+        }
+
+        .form-subtitle {
+            margin: 0 0 24px;
+            color: var(--text-soft);
+            line-height: 1.78;
+        }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            min-height: 50px;
+            padding: 12px 14px;
+            border: 1px solid rgba(139, 94, 60, 0.16);
+            border-radius: 16px;
+            box-sizing: border-box;
+            font-family: inherit;
+            background: rgba(255,255,255,0.88);
+            color: var(--text);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: rgba(139, 94, 60, 0.42);
+            box-shadow: 0 0 0 4px rgba(220, 168, 127, 0.18);
+            background: #fff;
+        }
+
+        .submit-form-btn {
+            width: 100%;
+            min-height: 52px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 16px 28px rgba(121, 76, 44, 0.18);
+            transition: var(--transition);
+        }
+
+        .submit-form-btn:hover { transform: translateY(-2px); }
+
+        @media (max-width: 1100px) {
+            .hero-grid,
+            .section-head { grid-template-columns: 1fr; }
+            .hero-grid { grid-template-columns: 1fr; }
+            .topbar {
+                border-radius: 28px;
+                align-items: flex-start;
+                flex-direction: column;
+            }
+            .nav-links { justify-content: flex-start; }
+        }
+
+        @media (max-width: 768px) {
+            .shell { width: min(100% - 18px, var(--container)); }
+            .hero { padding: 40px 22px 28px; }
+            .section-card { padding: 24px 18px; border-radius: 26px; }
+            .hero-actions a,
+            .hero-actions button { width: 100%; }
+            .hero-stats { grid-template-columns: 1fr; }
+        }
+
+        /* === Advanced Animations === */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(28px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes floatParticle {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.6; }
+            50% { transform: translateY(-80px) rotate(180deg); opacity: 0.2; }
+        }
+        @keyframes gentlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .paw-icon { display: block; }
+
+        .topbar {
+            backdrop-filter: blur(24px) saturate(1.6);
+            background: rgba(255, 250, 244, 0.62);
+        }
+
+        .hero { animation: fadeInUp 0.8s ease both; }
+        .section-card { animation: fadeInUp 0.8s ease 0.2s both; }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .cat-card {
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+        }
+        .cat-card:hover {
+            transform: translateY(-8px) rotateX(2deg) rotateY(-1deg);
+            box-shadow: 0 28px 56px rgba(96, 61, 35, 0.18), 0 8px 16px rgba(96, 61, 35, 0.08);
+        }
+
+        .hero-btn, .hero-admin, .btn-adopt, .submit-form-btn {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+        }
+        .hero-btn:hover, .hero-admin:hover {
+            transform: translateY(-2px) scale(1.03);
+        }
+        .btn-adopt:hover {
+            transform: translateY(-2px) scale(1.03);
+        }
+        .submit-form-btn:hover {
+            transform: translateY(-2px) scale(1.03);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: rgba(139, 94, 60, 0.42);
+            box-shadow: 0 0 0 4px rgba(220, 168, 127, 0.22), 0 0 20px rgba(220, 168, 127, 0.10);
+            background: #fff;
+        }
+
+        .floating-particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .floating-particles span {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(220, 168, 127, 0.3);
+            animation: floatParticle 8s ease-in-out infinite;
+        }
+        .floating-particles span:nth-child(2) { width: 4px; height: 4px; left: 20%; top: 30%; animation-delay: 1.5s; animation-duration: 10s; }
+        .floating-particles span:nth-child(3) { width: 8px; height: 8px; left: 70%; top: 20%; animation-delay: 3s; animation-duration: 12s; }
+        .floating-particles span:nth-child(4) { width: 5px; height: 5px; left: 40%; top: 60%; animation-delay: 2s; animation-duration: 9s; }
+        .floating-particles span:nth-child(5) { width: 7px; height: 7px; left: 85%; top: 70%; animation-delay: 4s; animation-duration: 11s; }
+        .floating-particles span:nth-child(6) { width: 4px; height: 4px; left: 10%; top: 80%; animation-delay: 5s; animation-duration: 13s; }
+        .floating-particles span:nth-child(1) { left: 55%; top: 10%; animation-delay: 0s; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+                scroll-behavior: auto !important;
+            }
+            .scroll-reveal { opacity: 1; transform: none; }
+            .floating-particles { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-particles"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="shell">
+        <header class="topbar">
+            <a href="index.html" class="brand">
+                <span class="brand-mark"><img src="图片/猫爪logo.png" alt="猫爪" style="width:100%;height:100%;object-fit:cover;border-radius:14px;"></span>
+                <span class="brand-copy">
+                    <strong>喵星守护站</strong>
+                    <span>城市流浪猫救助与领养平台</span>
+                </span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="wiki.html">百科</a></li>
+                <li><a href="adoption.html" class="active">领养</a></li>
+                <li><a href="stories.html">故事</a></li>
+                <li><a href="volunteer.html">志愿者</a></li>
+                <li><a href="donate.html">义卖</a></li>
+                <li><a href="lost-found.html">寻猫</a></li>
+                <li><a href="contact.html">联系</a></li>
+            </ul>
+        </header>
+
+        <section class="hero">
+            <div class="hero-grid">
+                <div>
+                    <span class="eyebrow">Adoption Journey</span>
+                    <h1>不是挑选宠物，而是在认真迎接一个新家人喵</h1>
+                    <p>这里展示的是已经完成基础整理、正在等待新家的猫咪档案。你可以浏览它们的状态与简介，再通过申请表单提交自己的领养意向喵</p>
+                    <div class="hero-actions">
+                        <a href="#adoption-list" class="hero-btn">开始浏览猫咪</a>
+                        <button onclick="checkAdmin()" class="hero-admin">我是管理员</button>
+                    </div>
+                </div>
+                <aside class="hero-panel">
+                    <strong>领养前请先想清楚喵</strong>
+                    <p>真正的领养不是短暂喜欢，而是把照顾、时间、空间与责任一起带回家。所以这个页面既展示温柔，也保留必要的信息筛选喵</p>
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <svg style="display:inline-block;margin-bottom:6px;" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+                            <strong>卡片式</strong>
+                            <span>更清楚地浏览猫咪状态与资料喵</span>
+                        </div>
+                        <div class="hero-stat">
+                            <svg style="display:inline-block;margin-bottom:6px;" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            <strong>申请制</strong>
+                            <span>提交基础信息，等待进一步沟通喵</span>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <div class="section-head">
+                <div>
+                    <h2>等待被带回家的猫咪档案喵</h2>
+                    <p>点击卡片中的按钮即可发起领养申请，已经被领养的猫咪会保留状态展示，但不再允许重复申请喵</p>
+                </div>
+            </div>
+
+            <div class="adoption-grid" id="adoption-list">
+                <p style="text-align:center; width:100%; color:#999; grid-column:1/-1;">正在加载猫咪数据...</p>
+            </div>
+        </section>
+    </div>
+
+    <div class="modal-overlay" id="adoptModal" onclick="if(event.target === this) closeAdoptionForm()">
+        <div class="modal-content">
+            <button type="button" class="close-btn" onclick="closeAdoptionForm()">×</button>
+            <h2 class="form-title">申请领养 <span id="catNameTarget" style="color:#dca87f"></span></h2>
+            <p class="form-subtitle">请填写你的基础信息与养猫条件，帮助管理员快速判断是否适合进入下一步沟通喵</p>
+
+            <form id="adoptionForm">
+                <div class="form-group">
+                    <label>您的姓名</label>
+                    <input type="text" id="aName" required>
+                </div>
+                <div class="form-group">
+                    <label>联系电话</label>
+                    <input type="tel" id="aPhone" placeholder="请输入中国大陆手机号" required>
+                </div>
+                <div class="form-group">
+                    <label>居住情况</label>
+                    <select id="aHousing">
+                        <option>自有住房 (已封窗)</option>
+                        <option>租房 (房东同意且已封窗)</option>
+                        <option>自有住房 (未封窗，愿意整改)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>养猫经验</label>
+                    <textarea id="aExp" rows="3" placeholder="之前养过猫吗？平时谁主要照顾它呢？"></textarea>
+                </div>
+                <button type="submit" class="submit-form-btn">提交领养申请</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function checkAdmin() {
+            const role = localStorage.getItem('userRole');
+            if (role === 'admin') {
+                window.location.href = 'admin.html';
+            } else {
+                alert('权限不足：您不是管理员，无法查看后台数据。');
+            }
+        }
+
+        let currentCat = '';
+        function openAdoptionForm(catName) {
+            currentCat = catName;
+            const modal = document.getElementById('adoptModal');
+            document.getElementById('catNameTarget').innerText = catName;
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('active'); }, 10);
+        }
+
+        function closeAdoptionForm() {
+            const modal = document.getElementById('adoptModal');
+            modal.classList.remove('active');
+            setTimeout(() => { modal.style.display = 'none'; }, 240);
+        }
+
+        document.getElementById('adoptionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                if (confirm('请先登录/注册账号才能申请领养！\n点击“确定”前往登录页面。')) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+
+            const phone = document.getElementById('aPhone').value;
+            const phoneRegex = /^1[3-9]\d{9}$/;
+            if (!phoneRegex.test(phone)) {
+                alert('请填写正确的11位中国大陆手机号码！\n(格式如：13812345678)');
+                return;
+            }
+
+            const payload = {
+                catName: currentCat,
+                applicant_name: document.getElementById('aName').value,
+                phone: phone,
+                housing: document.getElementById('aHousing').value,
+                experience: document.getElementById('aExp').value
+            };
+
+            fetch('http://localhost:8081/adopt', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(res => res.json()).then(data => {
+                if (data.success) {
+                    alert('✅ 申请已提交！请耐心等待管理员审核。');
+                    closeAdoptionForm();
+                    e.target.reset();
+                } else {
+                    alert('提交失败');
+                }
+            });
+        });
+
+        setInterval(loadCats, 1000);
+        window.addEventListener('load', loadCats);
+
+        function loadCats() {
+            const grid = document.getElementById('adoption-list');
+
+            fetch('http://localhost:8081/adoption-cats')
+                .then(response => response.json())
+                .then(cats => {
+                    grid.innerHTML = '';
+
+                    if (cats.length === 0) {
+                        grid.innerHTML = "<p style='text-align:center; width:100%; grid-column:1/-1;'>暂时没有待领养的猫咪</p>";
+                        return;
+                    }
+
+                    cats.forEach(cat => {
+                        const defaultImg = 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600';
+                        const localImageMap = {
+                            '布丁': '图片/三花猫.png',
+                            '大橘': '图片/橘猫.png',
+                            '奥利奥': '图片/奥利奥.png',
+                            '汤圆': '图片/汤圆.png'
+                        };
+                        const displayImg = cat.image_url || localImageMap[cat.name] || defaultImg;
+                        const isAdopted = cat.status === '已领养';
+                        const btnClass = isAdopted ? 'btn-adopt btn-disabled' : 'btn-adopt';
+                        const btnText = isAdopted ? '已被领养' : '申请领养';
+                        const clickAction = isAdopted ? '' : `onclick="openAdoptionForm('${cat.name}')"`;
+                        const statusClass = isAdopted ? 'status-close' : 'status-open';
+
+                        const card = `
+                            <div class="cat-card">
+                                <img src="${displayImg}" onerror="this.src='${defaultImg}'" alt="${cat.name}">
+                                <div class="card-overlay">
+                                    <span class="status-chip ${statusClass}">${cat.status}</span>
+                                    <h3>${cat.name}</h3>
+                                    <p class="tags">${cat.age || '未知'} / ${cat.gender || '未知'} / ${cat.status}</p>
+                                    <p class="desc">${cat.description || '暂无描述'}</p>
+                                    <span class="${btnClass}" ${clickAction}>${btnText}</span>
+                                </div>
+                            </div>
+                        `;
+                        grid.innerHTML += card;
+                    });
+                })
+                .catch(() => {
+                    if (grid.innerHTML.includes('正在加载')) {
+                        grid.innerHTML = "<p style='color:red; text-align:center; grid-column:1/-1;'>无法连接服务器 (http://localhost:8081)</p>";
+                    }
+                });
+        }
+    </script>
+    <script>
+        /* Intersection Observer for scroll-reveal animations */
+        (function() {
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+            function observeElements() {
+                document.querySelectorAll('.cat-card, .hero-panel, .hero-stat, .section-card').forEach(function(el) {
+                    if (!el.classList.contains('scroll-reveal') && !el.closest('.hero')) {
+                        el.classList.add('scroll-reveal');
+                        observer.observe(el);
+                    }
+                });
+            }
+            observeElements();
+            setInterval(observeElements, 2000);
+        })();
+    </script>
+</body>
+</html>

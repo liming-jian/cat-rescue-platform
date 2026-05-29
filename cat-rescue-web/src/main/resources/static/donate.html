@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>喵星守护站 - 爱心义卖</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #f6efe6;
+            --bg-soft: #fbf7f2;
+            --panel: rgba(255, 252, 247, 0.78);
+            --text: #4f3528;
+            --text-soft: #7d6355;
+            --primary: #8b5e3c;
+            --primary-deep: #6d4529;
+            --accent: #dca87f;
+            --accent-soft: #f2d8c1;
+            --success: #6f8f66;
+            --shadow-lg: 0 28px 60px rgba(87, 55, 31, 0.13);
+            --shadow-md: 0 16px 32px rgba(96, 61, 35, 0.10);
+            --shadow-sm: 0 6px 16px rgba(96, 61, 35, 0.07);
+            --radius-xl: 32px;
+            --radius-lg: 24px;
+            --radius-md: 18px;
+            --container: 1240px;
+            --transition: 220ms ease;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body {
+            font-family:'Quicksand','Microsoft YaHei',sans-serif;
+            background: radial-gradient(circle at top left,rgba(220,168,127,0.18),transparent 28%),
+                radial-gradient(circle at 85% 12%,rgba(139,94,60,0.12),transparent 24%),
+                linear-gradient(180deg,#fcf7f1 0%,#f6efe6 42%,#f4ecdf 100%);
+            color:var(--text); min-height:100vh;
+        }
+        a { color:inherit; text-decoration:none; }
+        img { display:block; max-width:100%; }
+
+        .site-shell { width:min(var(--container),calc(100% - 32px)); margin:18px auto 40px; }
+
+        .topbar {
+            position:sticky; top:14px; z-index:1000;
+            backdrop-filter:blur(18px); background:rgba(255,250,244,0.72);
+            border:1px solid rgba(255,255,255,0.55); box-shadow:0 14px 38px rgba(94,62,39,0.10);
+            border-radius:999px; padding:12px 18px;
+            display:flex; align-items:center; justify-content:space-between; gap:18px;
+        }
+        .brand { display:flex; align-items:center; gap:12px; min-width:180px; }
+        .brand-mark { width:42px; height:42px; border-radius:14px; display:grid; place-items:center; background:linear-gradient(145deg,#a2704e,#7b4f31); box-shadow:inset 0 1px 0 rgba(255,255,255,0.26),0 12px 24px rgba(122,79,49,0.24); }
+        .brand-copy strong { display:block; font-family:'Noto Serif SC',serif; font-size:1.06rem; letter-spacing:0.06em; }
+        .brand-copy span { display:block; font-size:0.78rem; color:var(--text-soft); margin-top:2px; }
+        .nav-links { list-style:none; display:flex; align-items:center; justify-content:center; gap:8px; flex:1; flex-wrap:wrap; }
+        .nav-links a { display:inline-flex; align-items:center; min-height:42px; padding:0 16px; border-radius:999px; color:var(--text-soft); font-weight:700; font-size:0.95rem; transition:var(--transition); }
+        .nav-links a:hover,.nav-links a.active { color:var(--primary-deep); background:rgba(255,255,255,0.72); box-shadow:inset 0 0 0 1px rgba(139,94,60,0.12); }
+        .user-assets { display:flex; align-items:center; gap:14px; background:var(--bg-soft); padding:6px 16px; border-radius:24px; border:1px solid rgba(126,91,63,0.16); min-width:190px; justify-content:flex-end; }
+        .balance-display { font-weight:bold; color:var(--success); font-size:0.88rem; }
+        .cart-wrapper { position:relative; cursor:pointer; display:flex; align-items:center; gap:5px; color:var(--accent); font-weight:bold; font-size:0.9rem; }
+        .cart-badge { background:#e85d5d; color:white; font-size:0.7rem; font-weight:bold; height:18px; min-width:18px; border-radius:9px; display:inline-flex; align-items:center; justify-content:center; position:absolute; top:-8px; right:-12px; padding:0 4px; }
+
+        /* Hero */
+        .donate-hero {
+            margin-top:22px; border-radius:38px; overflow:hidden; position:relative;
+            background:linear-gradient(135deg,#5c3a24 0%,#8b5e3c 50%,#a2704e 100%);
+            padding:72px 58px; box-shadow:var(--shadow-lg);
+            display:grid; grid-template-columns:1fr auto; align-items:center; gap:32px;
+        }
+        .donate-hero::before { content:''; position:absolute; top:-60px; right:-60px; width:320px; height:320px; border-radius:50%; background:radial-gradient(circle,rgba(220,168,127,0.3),transparent 70%); }
+        .hero-inner { position:relative; z-index:1; max-width:720px; }
+        .hero-cat { position:relative; z-index:1; width:280px; height:280px; border-radius:24px; overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,0.3); flex-shrink:0; }
+        .hero-cat img { width:100%; height:100%; object-fit:cover; }
+        .hero-eyebrow { display:inline-flex; align-items:center; gap:10px; padding:10px 16px; border-radius:999px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.16); font-size:0.88rem; color:rgba(255,244,232,0.9); }
+        .donate-hero h1 { margin:24px 0 18px; font-family:'Noto Serif SC',serif; font-size:clamp(2.4rem,4vw,3.6rem); line-height:1.2; color:#fffaf4; }
+        .donate-hero p { max-width:600px; font-size:1.1rem; line-height:1.9; color:rgba(255,244,232,0.85); }
+
+        /* 捐助卡片 - 1大+2小 */
+        .section-card { margin-top:28px; background:var(--panel); border:1px solid rgba(255,255,255,0.56); border-radius:34px; padding:34px; box-shadow:var(--shadow-md); backdrop-filter:blur(20px); }
+        .section-head h2 { margin:0; font-family:'Noto Serif SC',serif; font-size:clamp(1.8rem,3vw,2.3rem); }
+        .section-head p { margin:10px 0 0; color:var(--text-soft); line-height:1.82; }
+        .donate-grid { display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:24px; margin-top:24px; }
+        .donate-card { background:rgba(255,255,255,0.72); border:1px solid rgba(139,94,60,0.10); border-radius:28px; padding:36px 28px; text-align:center; transition:transform 0.3s ease,box-shadow 0.3s ease; }
+        .donate-card:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); }
+        .donate-card.featured { background:linear-gradient(145deg,rgba(139,94,60,0.06),rgba(220,168,127,0.12)); border:2px solid var(--accent-soft); position:relative; }
+        .donate-card.featured::after { content:'推荐'; position:absolute; top:16px; right:16px; padding:4px 12px; border-radius:999px; background:linear-gradient(135deg,var(--primary),var(--primary-deep)); color:#fff; font-size:0.75rem; font-weight:700; }
+        .donate-card .card-icon { font-size:2.2rem; margin-bottom:12px; color:var(--accent); }
+        .donate-card .amount { font-size:2.4rem; font-weight:bold; color:var(--primary); margin:12px 0; }
+        .donate-card.featured .amount { font-size:3rem; }
+        .donate-card .desc { font-size:0.9rem; color:var(--text-soft); margin-bottom:22px; line-height:1.7; }
+        .donate-btn { display:inline-block; padding:11px 28px; background:linear-gradient(135deg,var(--primary),var(--primary-deep)); color:white; border-radius:24px; cursor:pointer; border:none; font-weight:600; font-size:0.95rem; box-shadow:0 6px 16px rgba(139,94,60,0.2); transition:var(--transition); }
+        .donate-btn:hover { transform:scale(1.06); }
+
+        /* 商品区 - 大小卡片混排 */
+        .product-grid { display:grid; grid-template-columns:repeat(4,1fr); grid-template-rows:auto auto; gap:22px; margin-top:24px; }
+        .product-card { background:rgba(255,255,255,0.72); border:1px solid rgba(139,94,60,0.10); border-radius:28px; overflow:hidden; transition:transform 0.3s ease,box-shadow 0.3s ease; display:flex; flex-direction:column; }
+        .product-card:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); }
+        .product-card.large { grid-column:span 2; grid-row:span 2; }
+        .product-card .product-img { width:100%; aspect-ratio:4/3; object-fit:cover; }
+        .product-card.large .product-img { aspect-ratio:1/1; }
+        .product-info { padding:20px; flex:1; display:flex; flex-direction:column; }
+        .product-info h4 { font-family:'Noto Serif SC',serif; font-size:1.1rem; margin-bottom:8px; }
+        .product-info .price { color:var(--primary); font-weight:bold; font-size:1.2rem; margin-bottom:12px; }
+        .product-info .product-desc { color:var(--text-soft); font-size:0.88rem; line-height:1.7; flex:1; margin-bottom:14px; }
+        .add-cart-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 20px; background:linear-gradient(135deg,var(--primary),var(--primary-deep)); color:white; border:none; border-radius:18px; cursor:pointer; font-weight:600; font-size:0.9rem; transition:var(--transition); }
+        .add-cart-btn:hover { transform:scale(1.04); }
+        /* 弹窗 */
+        .modal-overlay { position:fixed; inset:0; background:rgba(71,45,29,0.52); z-index:2000; display:none; justify-content:center; align-items:center; backdrop-filter:blur(8px); padding:20px; }
+        .modal-overlay.active { display:flex; }
+        .modal-content { background:linear-gradient(180deg,rgba(255,251,246,0.98),rgba(255,247,239,0.94)); width:min(560px,100%); padding:30px; border-radius:28px; max-height:90vh; overflow-y:auto; border:1px solid rgba(255,255,255,0.72); box-shadow:0 24px 50px rgba(54,33,20,0.16); }
+        .close-btn { position:absolute; top:14px; right:18px; width:40px; height:40px; border-radius:14px; border:none; background:rgba(220,168,127,0.14); color:var(--primary); font-size:1.4rem; cursor:pointer; }
+        .cart-item { display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px dashed rgba(139,94,60,0.18); }
+        .cart-item img { width:60px; height:60px; border-radius:12px; object-fit:cover; }
+        .cart-item-info { flex:1; }
+        .cart-item-info strong { display:block; font-size:0.95rem; }
+        .cart-item-info span { color:var(--primary); font-weight:bold; }
+        .remove-btn { background:none; border:none; color:#e85d5d; cursor:pointer; font-size:0.85rem; }
+        .cart-total { margin-top:18px; text-align:right; font-size:1.2rem; font-weight:bold; color:var(--primary); }
+        .pay-btn { width:100%; margin-top:16px; padding:14px; background:linear-gradient(135deg,var(--primary),var(--primary-deep)); color:white; border:none; border-radius:18px; font-size:1rem; font-weight:700; cursor:pointer; box-shadow:0 12px 24px rgba(139,94,60,0.2); transition:var(--transition); }
+        .pay-btn:hover { transform:translateY(-2px); }
+
+        @media(max-width:1100px) { .donate-grid { grid-template-columns:1fr; } .product-grid { grid-template-columns:repeat(2,1fr); } .product-card.large { grid-column:span 2; grid-row:span 1; } }
+        @media(max-width:768px) { .site-shell { width:min(100% - 18px,var(--container)); } .donate-hero { padding:40px 22px; border-radius:28px; grid-template-columns:1fr; } .hero-cat { width:100%; height:200px; } .product-grid { grid-template-columns:1fr; } .product-card.large { grid-column:span 1; } .topbar { border-radius:28px; flex-direction:column; align-items:flex-start; } .nav-links { justify-content:flex-start; } .user-assets { width:100%; justify-content:flex-start; } }
+    </style>
+</head>
+<body>
+<div class="site-shell">
+    <header class="topbar">
+        <a href="index.html" class="brand">
+            <span class="brand-mark"><img src="图片/猫爪logo.png" alt="猫爪" style="width:100%;height:100%;object-fit:cover;border-radius:14px;"></span>
+            <span class="brand-copy"><strong>喵星守护站</strong><span>城市流浪猫救助与领养平台</span></span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="wiki.html">百科</a></li>
+            <li><a href="adoption.html">领养</a></li>
+            <li><a href="stories.html">故事</a></li>
+            <li><a href="volunteer.html">志愿者</a></li>
+            <li><a href="donate.html" class="active">义卖</a></li>
+            <li><a href="lost-found.html">寻猫</a></li>
+            <li><a href="contact.html">联系</a></li>
+        </ul>
+        <div class="user-assets">
+            <a href="wallet.html" class="balance-display" id="balanceShow">余额: -</a>
+            <div class="cart-wrapper" onclick="openCart()">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge" id="cartBadge">0</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="donate-hero">
+        <div class="hero-inner">
+            <span class="hero-eyebrow"><i class="fa-solid fa-heart"></i> 每一份购买都是一次守护</span>
+            <h1>用消费代替捐赠，让善意更有温度喵</h1>
+            <p>义卖所得将全部用于流浪猫的医疗救治、绝育手术和日常喂养，每一笔消费都有去处、有记录喵</p>
+        </div>
+        <div class="hero-cat">
+            <img src="图片/可爱猫猫.png" alt="可爱猫猫">
+        </div>
+    </section>
+    <section class="section-card">
+        <div class="section-head"><div><h2>爱心助力包喵</h2><p>选择一个助力包，直接为流浪猫的日常开销出一份力喵</p></div></div>
+        <div class="donate-grid">
+            <div class="donate-card featured">
+                <div class="card-icon"><i class="fa-solid fa-bowl-food"></i></div>
+                <div class="amount">¥50</div>
+                <p class="desc">一周口粮包 - 为一只流浪猫提供一周的猫粮和饮水，让它不再饿肚子喵</p>
+                <button class="donate-btn" onclick="doDonate(50)">立即助力</button>
+            </div>
+            <div class="donate-card">
+                <div class="card-icon"><i class="fa-solid fa-syringe"></i></div>
+                <div class="amount">¥100</div>
+                <p class="desc">医疗基金 - 用于流浪猫的驱虫、疫苗或基础体检喵</p>
+                <button class="donate-btn" onclick="doDonate(100)">立即助力</button>
+            </div>
+            <div class="donate-card">
+                <div class="card-icon"><i class="fa-solid fa-scissors"></i></div>
+                <div class="amount">¥200</div>
+                <p class="desc">绝育基金 - 帮助一只猫完成绝育手术，减少流浪繁殖喵</p>
+                <button class="donate-btn" onclick="doDonate(200)">立即助力</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-card">
+        <div class="section-head"><div><h2>周边义卖商城喵</h2><p>购买猫咪主题周边，所有收入用于流浪猫救助喵</p></div></div>
+        <div class="product-grid" id="productGrid">
+            <div class="product-card large">
+                <img class="product-img" src="图片/帆布袋.png" onerror="this.src='https://picsum.photos/seed/catbag/600/600'" alt="猫咪帆布袋">
+                <div class="product-info">
+                    <h4>猫咪守护者帆布袋</h4>
+                    <div class="price">¥39</div>
+                    <p class="product-desc">原创设计帆布袋，印有喵星守护站logo，环保耐用，背出去就是在为流浪猫代言喵</p>
+                    <button class="add-cart-btn" onclick="addToCart('猫咪守护者帆布袋',39,'图片/帆布袋.png')"><i class="fa-solid fa-cart-plus"></i> 加入购物车</button>
+                </div>
+            </div>
+            <div class="product-card">
+                <img class="product-img" src="图片/猫猫守护者徽章.png" onerror="this.src='https://picsum.photos/seed/catbadge/400/300'" alt="守护者徽章">
+                <div class="product-info">
+                    <h4>守护者徽章</h4>
+                    <div class="price">¥15</div>
+                    <p class="product-desc">金属胸针徽章，佩戴即守护喵</p>
+                    <button class="add-cart-btn" onclick="addToCart('守护者徽章',15,'图片/猫猫守护者徽章.png')"><i class="fa-solid fa-cart-plus"></i> 加入购物车</button>
+                </div>
+            </div>
+            <div class="product-card">
+                <img class="product-img" src="图片/台历.png" onerror="this.src='https://picsum.photos/seed/catcalendar/400/300'" alt="猫咪台历">
+                <div class="product-info">
+                    <h4>猫咪台历</h4>
+                    <div class="price">¥25</div>
+                    <p class="product-desc">12只被救助猫咪的故事台历喵</p>
+                    <button class="add-cart-btn" onclick="addToCart('猫咪台历',25,'图片/台历.png')"><i class="fa-solid fa-cart-plus"></i> 加入购物车</button>
+                </div>
+            </div>
+            <div class="product-card">
+                <img class="product-img" src="图片/爱心助粮包.png" onerror="this.src='https://picsum.photos/seed/catfood/400/300'" alt="爱心助粮包">
+                <div class="product-info">
+                    <h4>爱心助粮包</h4>
+                    <div class="price">¥45</div>
+                    <p class="product-desc">5kg优质猫粮，直送救助站喵</p>
+                    <button class="add-cart-btn" onclick="addToCart('爱心助粮包',45,'图片/爱心助粮包.png')"><i class="fa-solid fa-cart-plus"></i> 加入购物车</button>
+                </div>
+            </div>
+            <div class="product-card">
+                <img class="product-img" src="图片/猫猫吃猫粮.png" onerror="this.src='https://picsum.photos/seed/cattoy/400/300'" alt="猫咪玩具套装">
+                <div class="product-info">
+                    <h4>猫咪玩具套装</h4>
+                    <div class="price">¥28</div>
+                    <p class="product-desc">逗猫棒+毛球+薄荷鱼组合喵</p>
+                    <button class="add-cart-btn" onclick="addToCart('猫咪玩具套装',28,'图片/猫猫吃猫粮.png')"><i class="fa-solid fa-cart-plus"></i> 加入购物车</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<div class="modal-overlay" id="cartModal" onclick="if(event.target===this)closeCart()">
+    <div class="modal-content" style="position:relative;">
+        <button class="close-btn" onclick="closeCart()">x</button>
+        <h2 style="font-family:'Noto Serif SC',serif;color:var(--primary);margin-bottom:18px;">购物车</h2>
+        <div id="cartItems"></div>
+        <div class="cart-total" id="cartTotal">合计: ¥0</div>
+        <button class="pay-btn" onclick="doPay()">确认支付</button>
+    </div>
+</div>
+
+<script>
+let cart = JSON.parse(localStorage.getItem('catCart') || '[]');
+updateCartUI();
+loadBalance();
+
+function loadBalance() {
+    const user = localStorage.getItem('currentUser');
+    if (!user) { document.getElementById('balanceShow').textContent = '未登录'; return; }
+    const balance = parseFloat(localStorage.getItem('balance_' + user)) || 0;
+    document.getElementById('balanceShow').textContent = '余额: ¥' + balance.toFixed(2);
+}
+
+function addToCart(name, price, img) {
+    const existing = cart.find(i => i.name === name);
+    if (existing) { existing.qty++; } else { cart.push({ name, price, img, qty: 1 }); }
+    localStorage.setItem('catCart', JSON.stringify(cart));
+    updateCartUI();
+    const badge = document.getElementById('cartBadge');
+    badge.style.transform = 'scale(1.5)';
+    setTimeout(() => badge.style.transform = 'scale(1)', 200);
+}
+
+function updateCartUI() {
+    const total = cart.reduce((s, i) => s + i.qty, 0);
+    document.getElementById('cartBadge').textContent = total;
+}
+
+function openCart() {
+    const modal = document.getElementById('cartModal');
+    const container = document.getElementById('cartItems');
+    container.innerHTML = '';
+    if (cart.length === 0) { container.innerHTML = '<p style="text-align:center;color:var(--text-soft);padding:30px 0;">购物车是空的喵~</p>'; }
+    else {
+        cart.forEach((item, idx) => {
+            container.innerHTML += `<div class="cart-item"><img src="${item.img}" onerror="this.src='https://picsum.photos/seed/item/60/60'" alt="${item.name}"><div class="cart-item-info"><strong>${item.name}</strong><span>¥${item.price} x ${item.qty}</span></div><button class="remove-btn" onclick="removeItem(${idx})">删除</button></div>`;
+        });
+    }
+    const sum = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    document.getElementById('cartTotal').textContent = '合计: ¥' + sum;
+    modal.classList.add('active');
+}
+
+function closeCart() { document.getElementById('cartModal').classList.remove('active'); }
+
+function removeItem(idx) { cart.splice(idx, 1); localStorage.setItem('catCart', JSON.stringify(cart)); updateCartUI(); openCart(); }
+
+function doPay() {
+    const user = localStorage.getItem('currentUser');
+    if (!user) { alert('请先登录'); window.location.href = 'login.html'; return; }
+    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    if (total === 0) { alert('购物车是空的喵~'); return; }
+    const balanceKey = 'balance_' + user;
+    let balance = parseFloat(localStorage.getItem(balanceKey)) || 0;
+    if (balance < total) { alert('余额不足！当前余额: ¥' + balance.toFixed(2) + '\n请先到钱包充值喵~'); return; }
+    balance -= total;
+    localStorage.setItem(balanceKey, balance);
+    alert('支付成功！感谢你的爱心购买喵~');
+    cart = []; localStorage.setItem('catCart', '[]'); updateCartUI(); closeCart(); loadBalance();
+}
+
+function doDonate(amount) {
+    const user = localStorage.getItem('currentUser');
+    if (!user) { alert('请先登录'); window.location.href = 'login.html'; return; }
+    if (!confirm('确认捐助 ¥' + amount + ' 吗？将从钱包余额扣除喵~')) return;
+    const balanceKey = 'balance_' + user;
+    let balance = parseFloat(localStorage.getItem(balanceKey)) || 0;
+    if (balance < amount) { alert('余额不足！当前余额: ¥' + balance.toFixed(2) + '\n请先到钱包充值喵~'); return; }
+    balance -= amount;
+    localStorage.setItem(balanceKey, balance);
+    alert('捐助成功！感谢你的善意喵~');
+    loadBalance();
+}
+</script>
+</body>
+</html>

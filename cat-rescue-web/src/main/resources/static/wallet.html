@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的钱包 - 资金管理</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f6efe6;
+            --bg-soft: #fbf7f2;
+            --panel: rgba(255, 252, 247, 0.78);
+            --panel-solid: #fffaf4;
+            --line: rgba(126, 91, 63, 0.16);
+            --text: #4f3528;
+            --text-soft: #7d6355;
+            --primary: #8b5e3c;
+            --primary-deep: #6d4529;
+            --accent: #dca87f;
+            --accent-soft: #f2d8c1;
+            --success: #6f8f66;
+            --shadow-lg: 0 28px 60px rgba(87, 55, 31, 0.13);
+            --shadow-md: 0 16px 32px rgba(96, 61, 35, 0.10);
+            --radius-xl: 32px;
+            --radius-lg: 24px;
+            --radius-md: 18px;
+            --transition: 220ms ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Quicksand', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 30% 80%, rgba(220, 168, 127, 0.10) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 10%, rgba(242, 216, 193, 0.15) 0%, transparent 40%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Topbar */
+        .topbar {
+            position: sticky;
+            top: 16px;
+            z-index: 1000;
+            max-width: 960px;
+            width: calc(100% - 32px);
+            margin: 16px auto 0;
+            padding: 14px 28px;
+            background: var(--panel);
+            backdrop-filter: blur(18px) saturate(1.6);
+            -webkit-backdrop-filter: blur(18px) saturate(1.6);
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .brand {
+            display: flex; align-items: center; gap: 12px;
+            text-decoration: none; color: var(--text);
+        }
+        .brand-mark {
+            width: 42px; height: 42px; border-radius: 14px;
+            display: grid; place-items: center;
+            background: linear-gradient(145deg, #a2704e, #7b4f31);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.26), 0 8px 20px rgba(122, 79, 49, 0.3);
+        }
+        .brand-copy { display: flex; flex-direction: column; }
+        .brand-copy strong { font-size: 1.1rem; color: var(--primary); }
+        .brand-copy span { font-size: 0.72rem; color: var(--text-soft); }
+
+        .btn-home {
+            text-decoration: none; color: white;
+            background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+            padding: 10px 24px; border-radius: 30px;
+            font-weight: 600; font-size: 0.9rem;
+            box-shadow: 0 6px 16px rgba(139, 94, 60, 0.25);
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+        .btn-home:hover { transform: scale(1.05); box-shadow: 0 8px 24px rgba(139, 94, 60, 0.35); }
+
+        /* Container */
+        .container {
+            max-width: 960px;
+            margin: 50px auto;
+            padding: 0 20px;
+            opacity: 0;
+            animation: fadeUp 0.6s ease forwards;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 36px;
+            font-weight: 700;
+        }
+
+        /* Cards */
+        .card-container { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 40px; }
+
+        .bank-card {
+            background: linear-gradient(135deg, #5b8def 0%, #3dd5f3 100%);
+            color: white; padding: 28px; border-radius: var(--radius-lg);
+            box-shadow: 0 16px 40px rgba(59, 130, 246, 0.25);
+            height: 200px; display: flex; flex-direction: column; justify-content: space-between;
+            position: relative; overflow: hidden;
+            transition: transform var(--transition);
+        }
+        .bank-card::before {
+            content: '';
+            position: absolute; top: -30%; right: -20%;
+            width: 200px; height: 200px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+        }
+        .bank-card::after {
+            content: '';
+            position: absolute; bottom: -40%; left: -10%;
+            width: 250px; height: 250px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+        .bank-card:hover { transform: translateY(-6px) scale(1.02); }
+
+        .wallet-card {
+            background: linear-gradient(135deg, #e8956d 0%, #d4764e 100%);
+            color: white; padding: 28px; border-radius: var(--radius-lg);
+            box-shadow: 0 16px 40px rgba(220, 168, 127, 0.3);
+            height: 200px; display: flex; flex-direction: column; justify-content: space-between;
+            position: relative; overflow: hidden;
+            transition: transform var(--transition);
+        }
+        .wallet-card::before {
+            content: '';
+            position: absolute; top: -20%; right: -15%;
+            width: 180px; height: 180px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+        }
+        .wallet-card:hover { transform: translateY(-6px) scale(1.02); }
+
+        .card-title { font-size: 0.95rem; opacity: 0.9; display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; }
+        .card-balance { font-size: 2.6rem; font-weight: bold; margin: 10px 0; text-shadow: 0 2px 8px rgba(0,0,0,0.1); position: relative; z-index: 1; }
+        .card-no { font-family: monospace; letter-spacing: 3px; opacity: 0.7; position: relative; z-index: 1; }
+        .card-user { font-size: 0.85rem; text-align: right; opacity: 0.85; position: relative; z-index: 1; }
+
+        .btn-deposit-bank {
+            background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5); color: white;
+            padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 0.8rem;
+            text-decoration: none; transition: all var(--transition); backdrop-filter: blur(4px);
+        }
+        .btn-deposit-bank:hover { background: white; color: #5b8def; }
+
+        /* Recharge Section */
+        .recharge-section {
+            background: var(--panel);
+            backdrop-filter: blur(14px);
+            padding: 36px;
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: var(--shadow-md);
+        }
+        .recharge-section h3 {
+            margin-top: 0; color: var(--primary);
+            border-bottom: 2px solid var(--line);
+            padding-bottom: 16px; font-size: 1.2rem;
+        }
+        .recharge-section > p { color: var(--text-soft); font-size: 0.9rem; margin-top: 8px; }
+
+        .grid-money { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 14px; margin-top: 24px; }
+        .money-btn {
+            border: 2px solid var(--line); background: var(--panel-solid); color: var(--text);
+            padding: 14px 10px; font-size: 1.1rem; border-radius: var(--radius-md); cursor: pointer;
+            transition: all var(--transition); font-weight: bold;
+        }
+        .money-btn:hover {
+            border-color: var(--accent); color: var(--primary);
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 8px 20px rgba(220, 168, 127, 0.2);
+        }
+
+        .custom-recharge {
+            margin-top: 28px; display: flex; gap: 12px; align-items: center;
+            background: var(--bg-soft); padding: 18px; border-radius: var(--radius-md);
+            border: 1px solid var(--line);
+        }
+        .custom-recharge span { font-weight: bold; color: var(--text-soft); white-space: nowrap; }
+        .input-money {
+            padding: 12px 16px; border: 2px solid var(--line); border-radius: 12px;
+            width: 160px; font-size: 1rem; outline: none; background: white;
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+        .input-money:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(220, 168, 127, 0.15);
+        }
+        .btn-confirm-recharge {
+            background: linear-gradient(135deg, var(--accent), #c4885a);
+            color: white; border: none; padding: 12px 24px; border-radius: 12px;
+            cursor: pointer; font-weight: bold; font-size: 0.95rem;
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+        .btn-confirm-recharge:hover { transform: scale(1.05); box-shadow: 0 6px 16px rgba(220, 168, 127, 0.3); }
+
+        /* Bind Box */
+        .bind-box {
+            text-align: center; padding: 80px 30px;
+            background: var(--panel);
+            backdrop-filter: blur(14px);
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: var(--shadow-lg);
+        }
+        .bind-icon { font-size: 4.5rem; margin-bottom: 24px; }
+        .bind-box h2 { color: var(--primary); margin-bottom: 12px; }
+        .bind-box p { color: var(--text-soft); margin-bottom: 36px; max-width: 400px; margin-left: auto; margin-right: auto; }
+        .btn-bind {
+            background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+            color: white; padding: 16px 44px;
+            border: none; border-radius: 30px; font-size: 1.15rem; cursor: pointer;
+            box-shadow: 0 10px 30px rgba(139, 94, 60, 0.3);
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+        .btn-bind:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 14px 40px rgba(139, 94, 60, 0.4); }
+
+        /* Animations */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .card-container { grid-template-columns: 1fr; }
+            .topbar { border-radius: 20px; padding: 12px 18px; }
+            .brand-copy span { display: none; }
+            .custom-recharge { flex-direction: column; }
+            .input-money { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="topbar">
+    <a href="index.html" class="brand">
+        <span class="brand-mark">
+            <svg class="paw-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" width="30" height="30" aria-hidden="true"><ellipse cx="14.5" cy="18" rx="4.6" ry="6" fill="white"/><ellipse cx="25.5" cy="13" rx="5.6" ry="7.6" fill="white"/><ellipse cx="38.5" cy="13" rx="5.6" ry="7.6" fill="white"/><ellipse cx="49.5" cy="18" rx="4.6" ry="6" fill="white"/><path d="M32 28c-3.4 0-5.8 0.6-8.2 2-2.6 1.5-4.6 3.8-6.4 6.6-1.4 2.2-3 4.8-3 7.6 0 4 3 6.4 6.4 6.4 2.6 0 4.6-1.2 6.4-2.4 1.6-1.06 3-2.2 4.8-2.2s3.2 1.14 4.8 2.2c1.8 1.2 3.8 2.4 6.4 2.4 3.4 0 6.4-2.4 6.4-6.4 0-2.8-1.6-5.4-3-7.6-1.8-2.8-3.8-5.1-6.4-6.6C37.8 28.6 35.4 28 32 28Z" fill="white"/></svg>
+        </span>
+        <span class="brand-copy">
+            <strong>喵星守护站</strong>
+            <span>城市流浪猫救助与领养平台</span>
+        </span>
+    </a>
+    <a href="index.html" class="btn-home">← 返回首页</a>
+</nav>
+
+<div class="container">
+    <h1 class="page-title">我的资金账户</h1>
+
+    <div id="unboundView" class="bind-box" style="display:none;">
+        <div class="bind-icon">💳</div>
+        <h2>您尚未绑定银行卡</h2>
+        <p>绑定后即可开通平台支付功能，系统将根据您的信用评级随机发放初始资金 (¥20 - ¥10000)。</p>
+        <button class="btn-bind" onclick="bindCard()">立即开通 / 绑定账户</button>
+    </div>
+
+    <div id="boundView" style="display:none;">
+        <div class="card-container">
+            <div class="bank-card">
+                <div class="card-title">
+                    <span>🏦 模拟银行储蓄卡</span>
+                    <button class="btn-deposit-bank" onclick="depositToBank()">模拟存款</button>
+                </div>
+                <div class="card-balance">¥ <span id="bankBalance">0.00</span></div>
+                <div class="card-no">**** **** **** 8888</div>
+                <div class="card-user" id="bankUser">持卡人: --</div>
+            </div>
+
+            <div class="wallet-card">
+                <div class="card-title">🐱 喵星平台余额</div>
+                <div class="card-balance">¥ <span id="appBalance">0.00</span></div>
+                <div class="card-no">可用余额</div>
+                <div class="card-user">仅用于本站义卖/捐赠</div>
+            </div>
+        </div>
+
+        <div class="recharge-section">
+            <h3>💰 充值到平台余额</h3>
+            <p>资金将从左侧【银行卡】扣除，转入右侧【平台余额】。</p>
+
+            <div class="grid-money">
+                <button class="money-btn" onclick="recharge(5)">¥ 5</button>
+                <button class="money-btn" onclick="recharge(10)">¥ 10</button>
+                <button class="money-btn" onclick="recharge(50)">¥ 50</button>
+                <button class="money-btn" onclick="recharge(100)">¥ 100</button>
+                <button class="money-btn" onclick="recharge(500)">¥ 500</button>
+                <button class="money-btn" onclick="recharge(1000)">¥ 1000</button>
+            </div>
+
+            <div class="custom-recharge">
+                <span>其他金额:</span>
+                <input type="number" id="customAmount" class="input-money" placeholder="如 0.01" step="0.01">
+                <button class="btn-confirm-recharge" onclick="rechargeCustom()">确认充值</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. 检查登录
+    const currentUser = localStorage.getItem('currentUser');
+    const userRole = localStorage.getItem('userRole');
+
+    if (!currentUser) {
+        alert("请先登录！");
+        window.location.href = "login.html";
+    }
+
+    // 数据键名
+    const KEY_HAS_CARD = 'hasCard_' + currentUser;
+    const KEY_BANK_MONEY = 'bankMoney_' + currentUser;
+    const KEY_APP_MONEY = 'balance_' + currentUser;
+
+    // 初始化
+    function init() {
+        const hasCard = localStorage.getItem(KEY_HAS_CARD);
+        if (hasCard) {
+            showBoundView();
+        } else {
+            document.getElementById('unboundView').style.display = 'block';
+            document.getElementById('boundView').style.display = 'none';
+        }
+        document.getElementById('bankUser').innerText = "持卡人: " + currentUser;
+    }
+
+    // 绑定/开卡逻辑
+    function bindCard() {
+        let initialBankMoney = 0;
+
+        if (userRole === 'admin') {
+            initialBankMoney = 100000;
+        } else {
+            initialBankMoney = Math.floor(Math.random() * (10000 - 20 + 1)) + 20;
+        }
+
+        localStorage.setItem(KEY_HAS_CARD, 'true');
+        localStorage.setItem(KEY_BANK_MONEY, initialBankMoney);
+
+        if (!localStorage.getItem(KEY_APP_MONEY)) {
+            localStorage.setItem(KEY_APP_MONEY, 0);
+        }
+
+        alert(`🎉 开通成功！\n银行卡初始余额: ¥${initialBankMoney.toFixed(2)}`);
+        showBoundView();
+    }
+
+    // 刷新显示
+    function showBoundView() {
+        document.getElementById('unboundView').style.display = 'none';
+        document.getElementById('boundView').style.display = 'block';
+
+        const bank = parseFloat(localStorage.getItem(KEY_BANK_MONEY)) || 0;
+        const app = parseFloat(localStorage.getItem(KEY_APP_MONEY)) || 0;
+
+        animateNumber('bankBalance', bank);
+        animateNumber('appBalance', app);
+    }
+
+    // 数字滚动动画
+    function animateNumber(elementId, target) {
+        const el = document.getElementById(elementId);
+        const current = parseFloat(el.innerText) || 0;
+        const diff = target - current;
+        const duration = 600;
+        const startTime = performance.now();
+
+        function update(now) {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            el.innerText = (current + diff * eased).toFixed(2);
+            if (progress < 1) requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
+    }
+
+    // 充值逻辑
+    function executeRecharge(amount) {
+        let bank = parseFloat(localStorage.getItem(KEY_BANK_MONEY)) || 0;
+        let app = parseFloat(localStorage.getItem(KEY_APP_MONEY)) || 0;
+
+        if (bank >= amount) {
+            bank -= amount;
+            app += amount;
+
+            localStorage.setItem(KEY_BANK_MONEY, bank);
+            localStorage.setItem(KEY_APP_MONEY, app);
+
+            showBoundView();
+            alert(`✅ 充值成功！平台余额 +${amount.toFixed(2)}`);
+        } else {
+            alert(`❌ 银行卡余额不足！当前仅剩 ¥${bank.toFixed(2)}\n\n请点击上面的"模拟存款"补充资金。`);
+        }
+    }
+
+    function recharge(amount) {
+        executeRecharge(amount);
+    }
+
+    function rechargeCustom() {
+        const input = document.getElementById('customAmount');
+        const val = parseFloat(input.value);
+
+        if (!val || val <= 0) {
+            alert("请输入有效的金额 (例如 0.01)");
+            return;
+        }
+        executeRecharge(val);
+        input.value = "";
+    }
+
+    function depositToBank() {
+        const input = prompt("【模拟ATM】请输入要存入银行卡的金额：", "100");
+        if (input) {
+            const money = parseFloat(input);
+            if (money > 0) {
+                let bank = parseFloat(localStorage.getItem(KEY_BANK_MONEY)) || 0;
+                bank += money;
+                localStorage.setItem(KEY_BANK_MONEY, bank);
+                showBoundView();
+                alert(`💰 存款成功！银行卡余额增加 ¥${money.toFixed(2)}`);
+            } else {
+                alert("金额无效");
+            }
+        }
+    }
+
+    init();
+</script>
+
+</body>
+</html>
